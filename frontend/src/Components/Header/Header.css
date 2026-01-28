@@ -5,11 +5,11 @@
   box-sizing: border-box;
 }
 
-/* Header Container - Consistent Black Color with Increased Height */
+/* Header Container - Pure Black */
 .header {
   width: 100%;
-  height: 70px; /* Increased from 60px to 70px */
-  background-color: #000000; /* Pure black */
+  height: 70px;
+  background-color: #000000;
   display: flex;
   align-items: center;
   padding: 0 24px;
@@ -17,14 +17,8 @@
   top: 0;
   left: 0;
   z-index: 1000;
-  border-bottom: 2px solid #1c1c1c; /* Thicker 2px border */
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); /* Subtle shadow for depth */
-}
-
-/* Remove backdrop-filter and transparency for pure black */
-.header {
-  backdrop-filter: none;
-  background: #000000; /* Solid black */
+  border-bottom: 2px solid #1c1c1c;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 /* Desktop spacing */
@@ -37,6 +31,21 @@
 @media (min-width: 1024px) {
   .header {
     padding: 0 48px;
+  }
+}
+
+/* Mobile adjustments */
+@media (max-width: 767px) {
+  .header {
+    padding: 0 20px;
+    height: 65px;
+  }
+}
+
+@media (max-width: 480px) {
+  .header {
+    padding: 0 16px;
+    height: 62px;
   }
 }
 
@@ -58,12 +67,12 @@
 }
 
 .menu-btn:hover {
-  background-color: #1E1E1E; /* #1E1E1E for hover */
+  background-color: #1E1E1E;
   border-color: rgba(255, 255, 255, 0.15);
 }
 
 .menu-btn.clicked {
-  background-color: #1E1E1E; /* #1E1E1E for clicked state */
+  background-color: #1E1E1E;
   border: 2px solid #D9D9D9;
   animation: clickPulse 0.4s ease;
 }
@@ -129,10 +138,10 @@
   width: 100%;
 }
 
-/* Logo - Keep in corner on all devices with top adjustment */
+/* Logo */
 .logo-wrapper {
   display: flex;
-  justify-content: flex-end; /* Always keep in corner */
+  justify-content: flex-end;
   flex: 1;
   height: 100%;
 }
@@ -144,7 +153,7 @@
   transition: transform 0.2s ease;
   height: 100%;
   position: relative;
-  top: 9px; /* Added top: 9px positioning */
+  top: 9px;
 }
 
 .logo:hover {
@@ -154,26 +163,43 @@
 /* Padh - Yellow */
 .padh {
   font-family: 'Borel', cursive;
-  font-size: 22px; /* Reduced from 26px to 22px */
+  font-size: 22px;
   color: #facc15;
   line-height: 1;
   font-weight: 400;
   letter-spacing: 0.3px;
-  text-shadow: 0 2px 6px rgba(250, 204, 21, 0.3); /* Enhanced shadow for black background */
+  text-shadow: 0 2px 6px rgba(250, 204, 21, 0.3);
   display: inline-block;
   vertical-align: middle;
 }
 
-/* .AI - Off White */
+/* AI - Off White */
 .ai {
   font-family: 'Borel', cursive;
-  font-size: 22px; /* Reduced from 26px to 22px */
+  font-size: 22px;
   color: #D9D9D9;
   line-height: 1;
   font-weight: 400;
   display: inline-block;
   vertical-align: middle;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5); /* Shadow for better contrast on black */
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+/* Mobile logo adjustments */
+@media (max-width: 767px) {
+  .padh, .ai {
+    font-size: 20px;
+  }
+  
+  .logo-wrapper {
+    padding-right: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .padh, .ai {
+    font-size: 19px;
+  }
 }
 
 /* Desktop logo positioning */
@@ -183,14 +209,14 @@
   }
 }
 
-/* Sidebar - Black Background */
+/* Sidebar */
 .sidebar {
   position: fixed;
   top: 0;
-  left: -280px;
-  width: 280px;
+  left: -300px;
+  width: 300px;
   height: 100vh;
-  background-color: #000000; /* Black background */
+  background-color: #000000;
   transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 999;
   border-right: 1px solid #2a2a2a;
@@ -206,82 +232,27 @@
 /* Mobile View - Full Screen Sidebar */
 @media (max-width: 767px) {
   .sidebar {
-    width: 100%; /* Full width */
-    left: -100%; /* Hide completely off-screen */
-    border-right: none; /* Remove border for full screen */
-    box-shadow: none; /* Remove shadow for full screen */
+    width: 100%;
+    left: -100%;
+    border-right: none;
+    box-shadow: none;
   }
   
   .sidebar.active {
-    left: 0; /* Show full screen */
-  }
-  
-  /* Adjust content padding for mobile */
-  .sidebar-content {
-    padding: 80px 0 20px; /* Increased padding for taller header */
-  }
-  
-  /* Make upload card full width with margins */
-  .upload-card-btn {
-    margin: 0 20px 20px;
-    min-height: 120px;
-  }
-  
-  /* Adjust header for mobile */
-  .header {
-    padding: 0 16px;
-    height: 65px; /* Slightly increased for mobile */
-    border-bottom: 2px solid #1c1c1c; /* Maintain thicker border on mobile */
-  }
-  
-  /* Adjust logo size for mobile */
-  .padh, .ai {
-    font-size: 20px; /* Adjusted for mobile */
-  }
-  
-  /* Logo stays in corner on mobile */
-  .logo-wrapper {
-    padding-right: 0;
+    left: 0;
   }
 }
 
 /* Tablet View */
 @media (min-width: 768px) and (max-width: 1023px) {
   .sidebar {
-    width: 320px; /* Slightly wider on tablet */
-  }
-  
-  .sidebar.active {
-    left: 0;
-  }
-  
-  .upload-card-btn {
-    margin: 0 24px 24px;
-    min-height: 130px;
-  }
-  
-  .padh, .ai {
-    font-size: 20px; /* Adjusted for tablet */
-  }
-  
-  .logo-wrapper {
-    padding-right: 24px;
+    width: 320px;
   }
 }
 
-/* Desktop View (unchanged) */
-@media (min-width: 1024px) {
-  .sidebar {
-    width: 280px;
-  }
-  
-  .logo-wrapper {
-    padding-right: 24px;
-  }
-}
-
+/* Sidebar Content */
 .sidebar-content {
-  padding: 86px 0 20px; /* Increased padding for taller header (70px + 16px) */
+  padding: 86px 0 20px;
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -307,7 +278,7 @@
   background: #4a4a4a;
 }
 
-/* Upload Card Button - Just Image */
+/* Upload Card Button */
 .upload-card-btn {
   background: #6E91B5;
   border-radius: 12px;
@@ -342,27 +313,62 @@
   filter: brightness(1.1);
 }
 
+/* Mobile adjustments for upload card */
+@media (max-width: 767px) {
+  .upload-card-btn {
+    margin: 0 24px 20px;
+    min-height: 130px;
+    border-radius: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .upload-card-btn {
+    margin: 0 20px 20px;
+    min-height: 110px;
+    border-radius: 14px;
+  }
+}
+
 /* Sidebar Sections */
 .sidebar-section {
   padding: 0 20px;
   margin-bottom: 24px;
 }
 
+/* Mobile adjustments for sections */
 @media (max-width: 767px) {
   .sidebar-section {
-    padding: 0 24px; /* More padding on mobile */
+    padding: 0 24px;
+    margin-bottom: 28px;
+  }
+}
+
+@media (max-width: 480px) {
+  .sidebar-section {
+    padding: 0 20px;
+    margin-bottom: 24px;
   }
 }
 
 .section-title {
   color: #8a8a8a;
-  font-size: 11px;
+  font-size: 16px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.8px;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
   padding-left: 4px;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* Mobile adjustments for section title */
+@media (max-width: 767px) {
+  .section-title {
+    font-size: 14px;
+    margin-bottom: 14px;
+    letter-spacing: 0.6px;
+  }
 }
 
 .sidebar-list {
@@ -374,36 +380,48 @@
 .sidebar-item {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px 14px;
+  gap: 14px;
+  padding: 14px 16px;
   color: #D9D9D9;
-  font-size: 14px;
+  font-size: 18px;
   font-weight: 400;
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  border-radius: 8px;
-  margin-bottom: 2px;
+  border-radius: 10px;
+  margin-bottom: 4px;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
+/* Mobile adjustments for sidebar items */
 @media (max-width: 767px) {
   .sidebar-item {
-    padding: 14px 16px; /* Larger touch targets on mobile */
-    font-size: 15px; /* Slightly larger text */
+    padding: 16px 18px;
+    font-size: 17px;
+    gap: 16px;
+    border-radius: 12px;
+    margin-bottom: 6px;
   }
 }
 
-/* #1E1E1E hover color on black background */
+@media (max-width: 480px) {
+  .sidebar-item {
+    padding: 15px 16px;
+    font-size: 16px;
+    gap: 14px;
+    border-radius: 10px;
+    margin-bottom: 4px;
+  }
+}
+
 .sidebar-item:hover {
-  background-color: #1E1E1E; /* #1E1E1E on black background */
+  background-color: #1E1E1E;
   transform: translateX(4px);
 }
 
-/* Active state - Keep blue for active selection */
 .sidebar-item.active {
-  background-color: rgba(59, 130, 246, 0.15); /* Slightly more opaque on black */
+  background-color: rgba(59, 130, 246, 0.15);
   color: #3b82f6;
-  border-left: 3px solid #3b82f6;
+  border-left: 4px solid #3b82f6;
 }
 
 .sidebar-item.active .item-icon {
@@ -412,7 +430,8 @@
 
 .item-icon {
   color: #8a8a8a;
-  width: 18px;
+  width: 22px;
+  height: 22px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -420,21 +439,37 @@
   transition: color 0.2s ease;
 }
 
+/* Mobile adjustments for icons */
 @media (max-width: 767px) {
   .item-icon {
-    width: 20px; /* Larger icons on mobile */
+    width: 24px;
+    height: 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .item-icon {
+    width: 22px;
+    height: 22px;
   }
 }
 
 .item-text {
   flex: 1;
-  font-size: 14px;
+  font-size: 18px;
   font-weight: 400;
 }
 
+/* Mobile adjustments for item text */
 @media (max-width: 767px) {
   .item-text {
-    font-size: 15px; /* Slightly larger text on mobile */
+    font-size: 17px;
+  }
+}
+
+@media (max-width: 480px) {
+  .item-text {
+    font-size: 16px;
   }
 }
 
@@ -443,6 +478,8 @@
   opacity: 0.4;
   flex-shrink: 0;
   transition: all 0.2s ease;
+  width: 18px;
+  height: 18px;
 }
 
 .sidebar-item:hover .arrow-icon {
@@ -450,16 +487,31 @@
   transform: translateX(2px);
 }
 
-/* Logout - Centered Content */
+/* Mobile adjustments for arrow */
+@media (max-width: 767px) {
+  .arrow-icon {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+/* Logout */
 .sidebar-bottom {
   margin-top: auto;
   padding: 20px;
   border-top: 1px solid #2a2a2a;
 }
 
+/* Mobile adjustments for logout */
 @media (max-width: 767px) {
   .sidebar-bottom {
-    padding: 24px; /* More padding on mobile */
+    padding: 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .sidebar-bottom {
+    padding: 20px;
   }
 }
 
@@ -470,22 +522,35 @@
   justify-content: center;
   cursor: pointer;
   transition: all 0.2s ease;
-  border-radius: 8px;
-  background-color: #1E1E1E; /* #1E1E1E on black background */
-  border: 1px solid #2a2a2a; /* Slightly darker border */
+  border-radius: 10px;
+  background-color: #1E1E1E;
+  border: 1px solid #2a2a2a;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  min-height: 44px;
+  min-height: 50px;
+  color: #ef4444;
+  font-size: 18px;
+  font-weight: 500;
 }
 
+/* Mobile adjustments for logout button */
 @media (max-width: 767px) {
   .logout-btn {
-    min-height: 48px; /* Larger touch target on mobile */
+    min-height: 52px;
+    font-size: 17px;
+    border-radius: 12px;
   }
 }
 
-/* Darker hover for logout button */
+@media (max-width: 480px) {
+  .logout-btn {
+    min-height: 48px;
+    font-size: 16px;
+    border-radius: 10px;
+  }
+}
+
 .logout-btn:hover {
-  background-color: #252525; /* Darker than #1E1E1E on hover */
+  background-color: #252525;
   transform: translateY(-1px);
   border-color: #3a3a3a;
 }
@@ -494,9 +559,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
+  gap: 14px;
   width: 100%;
-  padding: 10px 0;
+  padding: 12px 0;
 }
 
 .logout-icon {
@@ -506,32 +571,66 @@
 
 .logout-text {
   color: #facc15;
-  font-size: 14px;
+  font-size: 18px;
   font-weight: 500;
+}
+
+/* Mobile adjustments for logout text */
+@media (max-width: 767px) {
+  .logout-text {
+    font-size: 17px;
+  }
+}
+
+@media (max-width: 480px) {
+  .logout-text {
+    font-size: 16px;
+  }
 }
 
 /* Footer Text */
 .sidebar-footer {
-  padding: 16px 20px 20px;
+  padding: 20px 20px 24px;
   text-align: center;
 }
 
+/* Mobile adjustments for footer */
 @media (max-width: 767px) {
   .sidebar-footer {
-    padding: 20px 24px 24px; /* More padding on mobile */
+    padding: 24px 24px 28px;
+  }
+}
+
+@media (max-width: 480px) {
+  .sidebar-footer {
+    padding: 20px 20px 24px;
   }
 }
 
 .footer-text {
   color: #6FAF8E;
-  font-size: 11px;
+  font-size: 16px;
   font-weight: 400;
   letter-spacing: 0.5px;
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  opacity: 0.8;
 }
 
-/* Overlay - More prominent on mobile */
+/* Mobile adjustments for footer text */
+@media (max-width: 767px) {
+  .footer-text {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .footer-text {
+    font-size: 13px;
+  }
+}
+
+/* Overlay */
 .sidebar-overlay {
   position: fixed;
   top: 0;
@@ -544,10 +643,11 @@
   backdrop-filter: blur(2px);
 }
 
+/* Mobile overlay adjustments */
 @media (max-width: 767px) {
   .sidebar-overlay {
-    background: rgba(0, 0, 0, 0.7); /* Darker overlay on mobile */
-    backdrop-filter: blur(4px); /* More blur on mobile */
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
   }
 }
 
@@ -556,19 +656,20 @@
   to { opacity: 1; }
 }
 
-/* Responsive Adjustments for very small screens */
+/* Hamburger mobile adjustments */
+@media (max-width: 767px) {
+  .menu-btn {
+    width: 42px;
+    height: 42px;
+  }
+  
+  .menu-btn__inner {
+    width: 24px;
+    height: 18px;
+  }
+}
+
 @media (max-width: 480px) {
-  .sidebar.active {
-    left: 0;
-    width: 100%;
-  }
-  
-  .header {
-    padding: 0 16px;
-    height: 62px; /* Adjusted for very small screens */
-    border-bottom: 2px solid #1c1c1c; /* Maintain thicker border */
-  }
-  
   .menu-btn {
     width: 40px;
     height: 40px;
@@ -578,202 +679,110 @@
     width: 22px;
     height: 16px;
   }
-  
-  .padh, .ai {
-    font-size: 19px; /* Adjusted for very small screens */
-  }
-  
-  .upload-card-btn {
-    margin: 0 20px 20px;
-    min-height: 110px;
-    border-radius: 10px;
-  }
-  
-  .sidebar-section {
-    padding: 0 20px;
-  }
-  
-  .sidebar-item {
-    padding: 13px 15px;
-  }
-  
-  /* Logo stays in corner on very small screens */
-  .logo-wrapper {
-    padding-right: 0;
-  }
 }
 
-
-
-
-
-
-
-/* ---------------------------------Below is the update new one ------------------------ */
-
-/* Sidebar Item Font Size - Increased */
-.sidebar-item {
+/* Upload Card Text (if using text version instead of image) */
+.upload-card {
+  background: #1E1E1E;
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  border-radius: 12px;
+  padding: 20px;
+  margin: 0 20px 24px;
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 10px 12px;
-  color: #D9D9D9;
-  font-size: 18px; /* Changed from 13px to 14px */
-  font-weight: 400;
+  gap: 16px;
   cursor: pointer;
-  transition: all 0.2s ease;
-  border-radius: 6px;
-  margin-bottom: 2px;
+  transition: all 0.3s ease;
 }
 
-.item-text {
+.upload-card:hover {
+  border-color: rgba(59, 130, 246, 0.4);
+  transform: translateY(-2px);
+}
+
+.upload-icon {
+  width: 48px;
+  height: 48px;
+  background: rgba(59, 130, 246, 0.1);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #3b82f6;
+  flex-shrink: 0;
+}
+
+.upload-text {
   flex: 1;
-  font-size: 18px; /* Changed from 13px to 14px */
-  font-weight: 400;
+  min-width: 0;
 }
 
-/* Upload Card Text Size - Increased */
 .upload-text h3 {
   color: #D9D9D9;
-  font-size: 19px; /* Changed from 14px to 15px */
+  font-size: 19px;
   font-weight: 500;
-  margin-bottom: 3px;
+  margin-bottom: 6px;
   line-height: 1.3;
 }
 
 .upload-text p {
   color: #8a8a8a;
-  font-size: 16px; /* Changed from 11px to 12px */
+  font-size: 16px;
   margin: 0;
   line-height: 1.4;
 }
 
-/* Logout Button Font Size - Increased */
-.logout-btn {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 12px;
-  color: #ef4444;
-  font-size: 18px; /* Changed from 13px to 14px */
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  border-radius: 6px;
-}
-
-/* Section Title Size - Slightly Increased */
-.section-title {
+.chevron-icon {
   color: #8a8a8a;
-  font-size: 16px; /* Changed from 10px to 11px */
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-bottom: 10px;
-  padding-left: 4px;
-}
-
-/* Footer Text Size - Increased */
-.footer-text {
-  color: #8a8a8a;
-  font-size: 16px; /* Changed from 10px to 11px */
-  font-weight: 400;
-  letter-spacing: 0.3px;
-  margin: 0;
+  flex-shrink: 0;
   opacity: 0.6;
 }
 
-
-/* Sidebar - Increased width for desktop */
-.sidebar {
-  position: fixed;
-  top: 0;
-  left: -300px; /* Changed from -260px to -270px */
-  width: 300px; /* Changed from 260px to 270px */
-  height: 100vh;
-  background-color: #0f0f0f;
-  transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  z-index: 999;
-  border-right: 1px solid #1c1c1c;
-  display: flex;
-  flex-direction: column;
+.upload-card:hover .chevron-icon {
+  opacity: 1;
 }
 
-/* Media queries for responsive adjustments */
-@media (max-width: 768px) {
-  .sidebar {
-    width: 250px; /* Increased from 240px to 250px */
-  }
-  
-  .header {
-    padding: 0 20px;
-  }
-  
-  .logo-wrapper {
-    justify-content: flex-end;
-  }
-  
-  .logo {
-    right: 0;
-  }
-  
-  .logo .padh {
-    font-size: 20px;
-  }
-  
-  .logo .ai {
-    font-size: 18px;
-    top: 0.5px;
-  }
-  
-  .upload-card,
-  .sidebar-section,
-  .sidebar-bottom,
-  .sidebar-footer {
-    padding-left: 18px;
-    padding-right: 18px;
-    margin-left: 0;
-    margin-right: 0;
-  }
-  
+/* Mobile adjustments for upload card (text version) */
+@media (max-width: 767px) {
   .upload-card {
-    margin-bottom: 18px;
+    padding: 22px;
+    margin: 0 24px 28px;
+    border-radius: 14px;
+    gap: 18px;
+  }
+  
+  .upload-icon {
+    width: 52px;
+    height: 52px;
+  }
+  
+  .upload-text h3 {
+    font-size: 18px;
+  }
+  
+  .upload-text p {
+    font-size: 15px;
   }
 }
 
 @media (max-width: 480px) {
-  .sidebar {
-    width: 230px; /* Increased from 220px to 230px */
+  .upload-card {
+    padding: 20px;
+    margin: 0 20px 24px;
+    border-radius: 12px;
+    gap: 16px;
   }
   
-  .header {
-    padding: 0 16px;
+  .upload-icon {
+    width: 48px;
+    height: 48px;
   }
   
-  .menu-btn {
-    width: 36px;
-    height: 36px;
-  }
-  
-  .menu-btn__inner {
-    width: 16px;
-    height: 11px;
-  }
-  
-  .logo .padh {
-    font-size: 19px;
-  }
-  
-  .logo .ai {
+  .upload-text h3 {
     font-size: 17px;
-    top: 0.3px;
   }
   
-  .upload-card,
-  .sidebar-section,
-  .sidebar-bottom,
-  .sidebar-footer {
-    padding-left: 16px;
-    padding-right: 16px;
+  .upload-text p {
+    font-size: 14px;
   }
 }
