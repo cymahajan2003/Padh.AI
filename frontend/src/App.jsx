@@ -1,12 +1,11 @@
 import Header from './Components/Header/Header'
+import HeadingLayout from './Components/HeadingLayout/HeadingLayout';
 
 function App() {
   return (
     <>
       <Header />
-      <main>
-        <p>App content goes here</p>
-      </main>
+      <HeadingLayout />
     </>
   )
 }
