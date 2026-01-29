@@ -10,9 +10,18 @@
 
 /* Container - Takes half the page width */
 .qa-container {
-  max-width: 600px;
-  /* Half of typical desktop width */
+  max-width: 600px; /* Half of typical desktop width */
   margin: 0;
+}
+
+/* Section wrapper */
+.qa-section,
+.recommended-section {
+  width: 100%;
+}
+
+.recommended-section {
+  margin-top: 28px;
 }
 
 /* Header - 16px, #707070 */
@@ -42,7 +51,6 @@
 .qa-scroll::-webkit-scrollbar {
   display: none;
 }
-
 .qa-scroll {
   scrollbar-width: none;
   -ms-overflow-style: none;
@@ -59,27 +67,7 @@
   min-width: 100%;
 }
 
-/* Floating Animation */
-.floating-animation {
-  animation: float 6s ease-in-out infinite var(--delay, 0s);
-  transform: translateY(0);
-}
-
-@keyframes float {
-  0% {
-    transform: translateY(0px);
-  }
-
-  50% {
-    transform: translateY(-8px);
-  }
-
-  100% {
-    transform: translateY(0px);
-  }
-}
-
-/* Card with floating animation */
+/* Card - No floating animation */
 .qa-card {
   min-height: 130px;
   border-radius: 14px;
@@ -92,14 +80,11 @@
   flex-direction: column;
   justify-content: space-between;
   border: 1px solid rgba(255, 255, 255, 0.08);
-  transform-origin: center;
 }
 
-/* Pause animation on hover */
 .qa-card:hover {
-  animation-play-state: paused;
-  transform: translateY(-4px) scale(1.02);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
 }
 
 /* Card content */
@@ -142,24 +127,12 @@
   justify-content: center;
   backdrop-filter: blur(4px);
   flex-shrink: 0;
-  transition: all 0.3s ease;
-}
-
-.qa-card:hover .card-icon-wrapper {
-  transform: scale(1.1) rotate(5deg);
-  background: rgba(255, 255, 255, 0.25);
 }
 
 .qa-icon {
   font-size: 20px;
   color: #000000;
   opacity: 0.9;
-  transition: all 0.3s ease;
-}
-
-.qa-card:hover .qa-icon {
-  transform: scale(1.1);
-  opacity: 1;
 }
 
 /* Hover overlay */
@@ -168,47 +141,38 @@
   bottom: 0;
   left: 0;
   right: 0;
-  background: linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(26, 26, 26, 0.95) 100%);
+  background: rgba(0, 0, 0, 0.9);
   padding: 14px 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   transform: translateY(100%);
-  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   z-index: 3;
-  opacity: 0;
 }
 
 .qa-card:hover .card-hover {
   transform: translateY(0);
-  opacity: 1;
 }
 
 .card-hover span {
   font-size: 13px;
   font-weight: 500;
   color: #ffffff;
-  transition: all 0.3s ease;
-}
-
-.qa-card:hover .card-hover span {
-  letter-spacing: 0.5px;
 }
 
 .hover-arrow {
   color: #ffffff;
   font-size: 14px;
-  transition: all 0.3s ease;
-  opacity: 0.7;
+  transition: transform 0.2s ease;
 }
 
 .qa-card:hover .hover-arrow {
-  transform: translateX(6px);
-  opacity: 1;
+  transform: translateX(3px);
 }
 
-/* Card colors with gradients - Updated to specified colors */
+/* Card colors with gradients - Using specified colors */
 .qa-card.upload {
   background: linear-gradient(135deg, #6E91B5 0%, #5A7FA0 100%);
 }
@@ -222,21 +186,124 @@
 }
 
 .qa-card.assistant {
-  background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%);
-  /* Changed from green to purple */
+  background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%); /* Purple color */
 }
 
-/* Add subtle glow effect on hover */
-.qa-card:hover::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 100%;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 100%);
-  z-index: 1;
-  pointer-events: none;
+/* Recommended Card */
+.recommended-card {
+  background: #1a1a1a;
+  border: 1px solid #2a2a2a;
+  border-radius: 14px;
+  padding: 20px;
+  transition: all 0.2s ease;
+}
+
+.recommended-card:hover {
+  border-color: #3a3a3a;
+  background: #222222;
+}
+
+.recommended-content {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.recommended-icon-wrapper {
+  width: 44px;
+  height: 44px;
+  background: rgba(139, 92, 246, 0.1);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.recommended-icon {
+  color: #8b5cf6;
+  font-size: 20px;
+}
+
+.recommended-text {
+  flex: 1;
+}
+
+.recommended-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(139, 92, 246, 0.1);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  border-radius: 4px;
+  padding: 4px 8px;
+  margin-bottom: 10px;
+}
+
+.star-icon {
+  color: #8b5cf6;
+  font-size: 12px;
+}
+
+.recommended-badge span {
+  font-size: 11px;
+  font-weight: 500;
+  color: #8b5cf6;
+  letter-spacing: 0.3px;
+}
+
+.recommended-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0 0 6px 0;
+  line-height: 1.3;
+}
+
+.recommended-tagline {
+  font-size: 13px;
+  font-weight: 400;
+  color: #8b5cf6;
+  margin: 0;
+  line-height: 1.4;
+  font-style: italic;
+}
+
+.recommended-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid #2a2a2a;
+  padding-top: 16px;
+}
+
+.recommended-description p {
+  font-size: 12px;
+  color: #8a8a8a;
+  margin: 0;
+  line-height: 1.4;
+  max-width: 220px;
+}
+
+/* Try Now Button */
+.try-now-btn {
+  background: transparent;
+  border: 1px solid #8b5cf6;
+  border-radius: 6px;
+  padding: 8px 20px;
+  color: #8b5cf6;
+  font-size: 12px;
+  font-weight: 500;
+  font-family: 'Anybody', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 85px;
+}
+
+.try-now-btn:hover {
+  background: rgba(139, 92, 246, 0.1);
+  transform: translateY(-1px);
 }
 
 /* Desktop - Fixed grid, 2 cards per row */
@@ -244,59 +311,42 @@
   .quick-actions {
     padding: 0 48px 40px;
   }
-
+  
   .qa-scroll {
     overflow-x: visible;
     margin: 0;
     padding: 0;
   }
-
+  
   .qa-cards {
     grid-auto-flow: unset;
-    grid-template-columns: repeat(2, 1fr);
-    /* 2 cards per row */
+    grid-template-columns: repeat(2, 1fr); /* 2 cards per row */
     width: 100%;
     min-width: unset;
     padding: 0;
     gap: 20px;
   }
-
+  
   .qa-card {
     min-height: 140px;
     padding: 24px;
   }
-
+  
   .card-title {
     font-size: 17px;
   }
-
+  
   .card-desc {
     font-size: 13px;
   }
-
+  
   .qa-title {
-    font-size: 16px;
-    /* Keep 16px on desktop */
+    font-size: 16px; /* Keep 16px on desktop */
     color: #707070;
   }
-
-  /* Desktop specific floating animation */
-  .floating-animation {
-    animation: floatDesktop 8s ease-in-out infinite var(--delay, 0s);
-  }
-
-  @keyframes floatDesktop {
-    0% {
-      transform: translateY(0px);
-    }
-
-    50% {
-      transform: translateY(-12px);
-    }
-
-    100% {
-      transform: translateY(0px);
-    }
+  
+  .recommended-section {
+    margin-top: 32px;
   }
 }
 
@@ -305,27 +355,31 @@
   .quick-actions {
     padding: 0 32px 32px;
   }
-
+  
   .qa-container {
     max-width: 500px;
   }
-
+  
   .qa-cards {
     grid-auto-columns: minmax(200px, 1fr);
     gap: 14px;
   }
-
+  
   .qa-card {
     min-height: 120px;
     padding: 18px;
   }
-
+  
   .card-title {
     font-size: 15px;
   }
-
+  
   .qa-title {
     font-size: 15px;
+  }
+  
+  .recommended-card {
+    padding: 18px;
   }
 }
 
@@ -334,72 +388,66 @@
   .quick-actions {
     padding: 0 24px 28px;
   }
-
+  
   .qa-container {
-    max-width: 100%;
-    /* Full width on mobile */
+    max-width: 100%; /* Full width on mobile */
   }
-
+  
   .qa-header {
     margin-bottom: 16px;
   }
-
+  
   .qa-title {
     font-size: 14px;
   }
-
+  
   .qa-cards {
     grid-auto-columns: minmax(180px, 1fr);
     gap: 12px;
   }
-
+  
   .qa-card {
     min-height: 110px;
     padding: 16px;
   }
-
+  
   .card-title {
     font-size: 14px;
   }
-
+  
   .card-desc {
     font-size: 11px;
   }
-
+  
   .card-icon-wrapper {
     width: 40px;
     height: 40px;
   }
-
+  
   .qa-icon {
     font-size: 18px;
   }
-
+  
   .card-hover {
     padding: 12px 16px;
   }
-
+  
   .card-hover span {
     font-size: 12px;
   }
-
-  /* Reduced floating animation on mobile */
-  .floating-animation {
-    animation: floatMobile 5s ease-in-out infinite var(--delay, 0s);
+  
+  .recommended-section {
+    margin-top: 24px;
   }
-
-  @keyframes floatMobile {
-    0% {
-      transform: translateY(0px);
-    }
-
-    50% {
-      transform: translateY(-4px);
-    }
-
-    100% {
-      transform: translateY(0px);
-    }
+  
+  .recommended-card {
+    padding: 18px;
+  }
+  
+  .try-now-btn {
+    padding: 7px 16px;
+    font-size: 11px;
+    min-width: 80px;
   }
 }
 
@@ -408,27 +456,55 @@
   .quick-actions {
     padding: 0 20px 24px;
   }
-
+  
   .qa-cards {
     grid-auto-columns: minmax(160px, 1fr);
     gap: 10px;
   }
-
+  
   .qa-card {
     min-height: 100px;
     padding: 14px;
     border-radius: 12px;
   }
-
+  
   .card-title {
     font-size: 13px;
   }
-
+  
   .card-hover {
     padding: 10px 14px;
   }
-
+  
   .card-hover span {
     font-size: 11px;
+  }
+  
+  .recommended-card {
+    padding: 16px;
+  }
+  
+  .recommended-title {
+    font-size: 15px;
+  }
+  
+  .recommended-tagline {
+    font-size: 12px;
+  }
+  
+  .recommended-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  
+  .recommended-description p {
+    max-width: 100%;
+    font-size: 11px;
+  }
+  
+  .try-now-btn {
+    width: 100%;
+    text-align: center;
   }
 }

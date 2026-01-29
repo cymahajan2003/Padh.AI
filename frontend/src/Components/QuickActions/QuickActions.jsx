@@ -4,7 +4,9 @@ import {
   FiFileText,
   FiCheckSquare,
   FiCpu,
-  FiChevronRight
+  FiChevronRight,
+  FiStar,
+  FiZap
 } from 'react-icons/fi';
 
 function QuickActions() {
@@ -16,94 +18,126 @@ function QuickActions() {
   return (
     <section className="quick-actions">
       <div className="qa-container">
-        <div className="qa-header">
-          <h2 className="qa-title">Quick Actions</h2>
+        {/* Quick Actions Section */}
+        <div className="qa-section">
+          <div className="qa-header">
+            <h2 className="qa-title">Quick Actions</h2>
+          </div>
+
+          <div className="qa-scroll">
+            <div className="qa-cards">
+              {/* Upload Card */}
+              <div 
+                className="qa-card upload"
+                onClick={() => handleCardClick('Upload Document')}
+              >
+                <div className="card-content">
+                  <div className="card-text">
+                    <h3 className="card-title">Upload Document</h3>
+                    <p className="card-desc">Start learning with AI</p>
+                  </div>
+                  <div className="card-icon-wrapper">
+                    <FiUpload className="qa-icon" />
+                  </div>
+                </div>
+                <div className="card-hover">
+                  <span>Get Started</span>
+                  <FiChevronRight className="hover-arrow" />
+                </div>
+              </div>
+
+              {/* Summary Card */}
+              <div 
+                className="qa-card summary"
+                onClick={() => handleCardClick('AI Summary')}
+              >
+                <div className="card-content">
+                  <div className="card-text">
+                    <h3 className="card-title">AI Summary</h3>
+                    <p className="card-desc">Quick insights & notes</p>
+                  </div>
+                  <div className="card-icon-wrapper">
+                    <FiFileText className="qa-icon" />
+                  </div>
+                </div>
+                <div className="card-hover">
+                  <span>Try Now</span>
+                  <FiChevronRight className="hover-arrow" />
+                </div>
+              </div>
+
+              {/* Quiz Card */}
+              <div 
+                className="qa-card quiz"
+                onClick={() => handleCardClick('Practice Quiz')}
+              >
+                <div className="card-content">
+                  <div className="card-text">
+                    <h3 className="card-title">Practice Quiz</h3>
+                    <p className="card-desc">Test your knowledge</p>
+                  </div>
+                  <div className="card-icon-wrapper">
+                    <FiCheckSquare className="qa-icon" />
+                  </div>
+                </div>
+                <div className="card-hover">
+                  <span>Start Quiz</span>
+                  <FiChevronRight className="hover-arrow" />
+                </div>
+              </div>
+
+              {/* Assistant Card */}
+              <div 
+                className="qa-card assistant"
+                onClick={() => handleCardClick('AI Assistant')}
+              >
+                <div className="card-content">
+                  <div className="card-text">
+                    <h3 className="card-title">AI Assistant</h3>
+                    <p className="card-desc">Get instant help</p>
+                  </div>
+                  <div className="card-icon-wrapper">
+                    <FiCpu className="qa-icon" />
+                  </div>
+                </div>
+                <div className="card-hover">
+                  <span>Ask AI</span>
+                  <FiChevronRight className="hover-arrow" />
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div className="qa-scroll">
-          <div className="qa-cards">
-            {/* Upload Card */}
-            <div 
-              className="qa-card upload floating-animation"
-              onClick={() => handleCardClick('Upload Document')}
-              style={{ '--delay': '0s' }}
-            >
-              <div className="card-content">
-                <div className="card-text">
-                  <h3 className="card-title">Upload Document</h3>
-                  <p className="card-desc">Start learning with AI</p>
-                </div>
-                <div className="card-icon-wrapper">
-                  <FiUpload className="qa-icon" />
-                </div>
+        {/* Recommended Section */}
+        <div className="recommended-section">
+          <div className="qa-header">
+            <h2 className="qa-title">Recommended</h2>
+          </div>
+
+          <div className="recommended-card">
+            <div className="recommended-content">
+              <div className="recommended-icon-wrapper">
+                <FiZap className="recommended-icon" />
               </div>
-              <div className="card-hover">
-                <span>Get Started</span>
-                <FiChevronRight className="hover-arrow" />
+              
+              <div className="recommended-text">
+                <div className="recommended-badge">
+                  <FiStar className="star-icon" />
+                  <span>Featured</span>
+                </div>
+                <h3 className="recommended-title">Anti-Lazy AI</h3>
+                <p className="recommended-tagline">Learn by thinking, not copying.</p>
               </div>
             </div>
-
-            {/* Summary Card */}
-            <div 
-              className="qa-card summary floating-animation"
-              onClick={() => handleCardClick('AI Summary')}
-              style={{ '--delay': '0.2s' }}
-            >
-              <div className="card-content">
-                <div className="card-text">
-                  <h3 className="card-title">AI Summary</h3>
-                  <p className="card-desc">Quick insights & notes</p>
-                </div>
-                <div className="card-icon-wrapper">
-                  <FiFileText className="qa-icon" />
-                </div>
+            
+            <div className="recommended-footer">
+              <div className="recommended-description">
+                <p>Transform your learning with intelligent questioning</p>
               </div>
-              <div className="card-hover">
-                <span>Try Now</span>
-                <FiChevronRight className="hover-arrow" />
-              </div>
-            </div>
-
-            {/* Quiz Card */}
-            <div 
-              className="qa-card quiz floating-animation"
-              onClick={() => handleCardClick('Practice Quiz')}
-              style={{ '--delay': '0.4s' }}
-            >
-              <div className="card-content">
-                <div className="card-text">
-                  <h3 className="card-title">Practice Quiz</h3>
-                  <p className="card-desc">Test your knowledge</p>
-                </div>
-                <div className="card-icon-wrapper">
-                  <FiCheckSquare className="qa-icon" />
-                </div>
-              </div>
-              <div className="card-hover">
-                <span>Start Quiz</span>
-                <FiChevronRight className="hover-arrow" />
-              </div>
-            </div>
-
-            {/* Assistant Card */}
-            <div 
-              className="qa-card assistant floating-animation"
-              onClick={() => handleCardClick('AI Assistant')}
-              style={{ '--delay': '0.6s' }}
-            >
-              <div className="card-content">
-                <div className="card-text">
-                  <h3 className="card-title">AI Assistant</h3>
-                  <p className="card-desc">Get instant help</p>
-                </div>
-                <div className="card-icon-wrapper">
-                  <FiCpu className="qa-icon" />
-                </div>
-              </div>
-              <div className="card-hover">
-                <span>Ask AI</span>
-                <FiChevronRight className="hover-arrow" />
-              </div>
+              <button className="try-now-btn">
+                Try Now
+              </button>
             </div>
           </div>
         </div>
