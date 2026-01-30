@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { FiFile } from 'react-icons/fi';
+import { FiFile, FiChevronRight } from 'react-icons/fi';
 import './RecentDocuments.css';
 
 const RecentDocuments = () => {
@@ -95,59 +95,65 @@ const RecentDocuments = () => {
         </div>
 
         <div className="recent-card">
-          {displayDocs.length > 0 ? (
-            displayDocs.map((doc, index) => (
-              <div 
-                key={doc.id || index}
-                className={`recent-row ${doc.empty ? 'empty-row' : ''}`}
-                onClick={() => !doc.empty && handleDocumentClick(doc)}
-              >
-                <div className="doc-content">
-                  <div className="doc-icon-text">
-                    <div className="doc-icon-wrapper">
-                      <FiFile className="doc-icon" />
-                    </div>
-                    <div className="doc-details">
-                      {doc.empty ? (
-                        <>
-                          <span className="doc-name empty-name">No document uploaded</span>
-                          <span className="doc-date empty-date">Upload a document</span>
-                        </>
-                      ) : (
-                        <>
-                          <span className="doc-name">{doc.name}</span>
-                          <span className="doc-date">{formatDate(doc.date)}</span>
-                        </>
-                      )}
+          {/* Document List */}
+          <div className="recent-list">
+            {displayDocs.length > 0 ? (
+              displayDocs.map((doc, index) => (
+                <div 
+                  key={doc.id || index}
+                  className={`recent-row ${doc.empty ? 'empty-row' : ''}`}
+                  onClick={() => !doc.empty && handleDocumentClick(doc)}
+                >
+                  <div className="doc-content">
+                    <div className="doc-icon-text">
+                      <div className="doc-icon-wrapper">
+                        <FiFile className="doc-icon" />
+                      </div>
+                      <div className="doc-details">
+                        {doc.empty ? (
+                          <>
+                            <span className="doc-name empty-name">No document uploaded</span>
+                            <span className="doc-date empty-date">Upload a document</span>
+                          </>
+                        ) : (
+                          <>
+                            <span className="doc-name">{doc.name}</span>
+                            <span className="doc-date">{formatDate(doc.date)}</span>
+                          </>
+                        )}
+                      </div>
                     </div>
                   </div>
+                  {!doc.empty && <FiChevronRight className="doc-arrow" />}
                 </div>
-                {!doc.empty && <span className="doc-arrow">›</span>}
+              ))
+            ) : (
+              // Only show empty state when there are truly no documents
+              <div className="no-documents">
+                <div className="doc-icon-wrapper empty-icon">
+                  <FiFile className="doc-icon" />
+                </div>
+                <span>No documents uploaded yet</span>
+                <p className="no-docs-hint">Upload your first document using the "Upload Document" button</p>
               </div>
-            ))
-          ) : (
-            // Only show empty state when there are truly no documents
-            <div className="no-documents">
-              <div className="doc-icon-wrapper empty-icon">
-                <FiFile className="doc-icon" />
-              </div>
-              <span>No documents uploaded yet</span>
-              <p className="no-docs-hint">Upload your first document using the "Upload Document" button</p>
+            )}
+          </div>
+
+          {/* Footer with View All button - Inside the card like Recommended section */}
+          {allDocuments.length > 0 && (
+            <div className="recent-footer">
+              <p className="recent-desc">
+                {showAll ? 'Showing all documents' : 'View all your uploaded documents'}
+              </p>
+              <button 
+                className="view-all-btn"
+                onClick={toggleViewAll}
+              >
+                {showAll ? 'Show Less' : 'View All'}
+              </button>
             </div>
           )}
         </div>
-
-        {/* Footer with toggle button - Only show if there are documents */}
-        {allDocuments.length > 0 && (
-          <div className="recent-footer">
-            <button 
-              className="view-all-btn"
-              onClick={toggleViewAll}
-            >
-              {showAll ? 'Show Less' : 'View All'}
-            </button>
-          </div>
-        )}
       </section>
     </div>
   );
