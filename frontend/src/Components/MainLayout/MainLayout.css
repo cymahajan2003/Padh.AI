@@ -2,9 +2,10 @@
 
 .main-layout-wrapper {
   width: 100%;
-  padding: 0;
-  margin: 0;
+  min-height: 100vh;
   background-color: #000000;
+  position: relative;
+  overflow-x: hidden;
 }
 
 .main-layout-container {
@@ -12,8 +13,8 @@
   width: 100%;
   max-width: 1600px;
   margin: 0 auto;
-  padding: 0;
-  gap: 0;
+  min-height: 100vh;
+  position: relative;
 }
 
 /* Left Panel - Quick Actions */
@@ -21,6 +22,7 @@
   flex: 1;
   min-width: 0;
   padding: 0 48px 32px 48px;
+  position: relative;
 }
 
 /* Right Panel - Recent Documents + Image Section */
@@ -28,57 +30,89 @@
   flex: 1;
   min-width: 0;
   padding: 0 48px 32px 48px;
-  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  position: relative;
+}
 
-  display: flex;              /* Added */
-  flex-direction: column;     /* Stack vertically */
-  gap: 24px;                  /* Space between RecentDocuments & ImageSection */
+/* Ensure sections stack properly */
+.quick-actions-panel > *,
+.recent-docs-panel > * {
+  width: 100%;
 }
 
 /* Desktop Layout */
 @media (min-width: 1024px) {
   .main-layout-container {
+    flex-direction: row;
     gap: 0;
   }
 
   .quick-actions-panel {
     flex: 0 0 50%;
     max-width: 50%;
+    padding: 0 48px 32px 48px;
   }
 
   .recent-docs-panel {
     flex: 0 0 50%;
     max-width: 50%;
+    padding: 0 48px 32px 48px;
   }
 }
 
-/* Tablet Layout */
-@media (min-width: 768px) and (max-width: 1023px) {
+/* Small Desktop / Large Tablet */
+@media (max-width: 1024px) and (min-width: 901px) {
+  .quick-actions-panel,
+  .recent-docs-panel {
+    padding: 0 40px 28px 40px;
+  }
+}
+
+/* Tablet Layout - Switch to column */
+@media (max-width: 900px) {
   .main-layout-container {
     flex-direction: column;
   }
 
-  .quick-actions-panel {
+  .quick-actions-panel,
+  .recent-docs-panel {
+    flex: 0 0 100%;
+    max-width: 100%;
     padding: 0 32px 24px 32px;
   }
 
   .recent-docs-panel {
-    padding: 0 32px 24px 32px;
+    gap: 28px; /* Slightly larger gap on tablet */
   }
 }
 
-/* Mobile Layout */
+/* Mobile Landscape */
 @media (max-width: 767px) {
   .main-layout-container {
     flex-direction: column;
   }
 
-  .quick-actions-panel {
+  .quick-actions-panel,
+  .recent-docs-panel {
     padding: 0 24px 20px 24px;
   }
 
   .recent-docs-panel {
-    padding: 0 24px 20px 24px;
+    gap: 24px;
+  }
+}
+
+/* Mobile Portrait */
+@media (max-width: 600px) {
+  .quick-actions-panel,
+  .recent-docs-panel {
+    padding: 0 20px 18px 20px;
+  }
+
+  .recent-docs-panel {
+    gap: 22px;
   }
 }
 
@@ -86,6 +120,99 @@
 @media (max-width: 480px) {
   .quick-actions-panel,
   .recent-docs-panel {
-    padding: 0 20px 16px 20px;
+    padding: 0 16px 16px 16px;
+  }
+
+  .recent-docs-panel {
+    gap: 20px;
+  }
+}
+
+/* Extra Small Mobile */
+@media (max-width: 360px) {
+  .quick-actions-panel,
+  .recent-docs-panel {
+    padding: 0 14px 14px 14px;
+  }
+
+  .recent-docs-panel {
+    gap: 18px;
+  }
+}
+
+/* Fix for notched phones */
+@supports (padding: max(0px)) {
+  @media (max-width: 900px) {
+    .quick-actions-panel,
+    .recent-docs-panel {
+      padding-left: max(32px, env(safe-area-inset-left));
+      padding-right: max(32px, env(safe-area-inset-right));
+    }
+  }
+
+  @media (max-width: 600px) {
+    .quick-actions-panel,
+    .recent-docs-panel {
+      padding-left: max(20px, env(safe-area-inset-left));
+      padding-right: max(20px, env(safe-area-inset-right));
+    }
+  }
+
+  @media (max-width: 480px) {
+    .quick-actions-panel,
+    .recent-docs-panel {
+      padding-left: max(16px, env(safe-area-inset-left));
+      padding-right: max(16px, env(safe-area-inset-right));
+    }
+  }
+}
+
+/* Landscape orientation on mobile */
+@media (max-height: 600px) and (orientation: landscape) {
+  .main-layout-container {
+    min-height: auto;
+  }
+
+  .quick-actions-panel,
+  .recent-docs-panel {
+    padding: 0 24px 16px 24px;
+  }
+
+  .recent-docs-panel {
+    gap: 16px;
+  }
+}
+
+/* Ensure proper spacing when panels stack */
+@media (max-width: 900px) {
+  .quick-actions-panel {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    margin-bottom: 8px;
+  }
+}
+
+/* Smooth transitions for responsive changes */
+.quick-actions-panel,
+.recent-docs-panel {
+  transition: padding 0.3s ease, gap 0.3s ease;
+}
+
+/* Fix for iOS height issues */
+@supports (-webkit-touch-callout: none) {
+  .main-layout-wrapper,
+  .main-layout-container {
+    min-height: -webkit-fill-available;
+  }
+}
+
+/* High-resolution screens */
+@media (min-width: 2000px) {
+  .main-layout-container {
+    max-width: 1800px;
+  }
+  
+  .quick-actions-panel,
+  .recent-docs-panel {
+    padding: 0 64px 40px 64px;
   }
 }
