@@ -8,7 +8,7 @@ function MainLayout() {
   return (
     <div className="main-layout-wrapper">
       <div className="main-layout-container">
-        
+
         {/* Left Side - Quick Actions */}
         <div className="quick-actions-panel">
           <QuickActions />
@@ -16,8 +16,8 @@ function MainLayout() {
 
         {/* Right Side - Image Section + Recent Documents */}
         <div className="recent-docs-panel">
-          <ImageSection />      {/* ✅ Now on top */}
           <RecentDocuments />   {/* ✅ Now below */}
+          <ImageSection />      {/* ✅ Now on top */}
         </div>
 
       </div>
