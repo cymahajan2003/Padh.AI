@@ -1,4 +1,3 @@
-// QuickActions.jsx - With side by side layout
 import './QuickActions.css';
 import {
   FiUpload,
@@ -10,16 +9,35 @@ import {
 } from 'react-icons/fi';
 import { useCallback, useRef } from 'react';
 
-function QuickActions() {
+function QuickActions({ onNavigate }) {
   const fileInputRef = useRef(null);
 
   const handleCardClick = useCallback((action) => {
     console.log(`✨ ${action} clicked`);
     
-    if (action === 'upload') {
-      handleUpload();
+    switch(action) {
+      case 'upload':
+        handleUpload();
+        break;
+      case 'summary':
+        if (onNavigate) {
+          onNavigate('summary');
+        }
+        break;
+      case 'quiz':
+        if (onNavigate) {
+          onNavigate('quiz');
+        }
+        break;
+      case 'assistant':
+        if (onNavigate) {
+          onNavigate('assistant');
+        }
+        break;
+      default:
+        console.log('Unknown action:', action);
     }
-  }, []);
+  }, [onNavigate]);
 
   const handleUpload = useCallback(() => {
     if (!fileInputRef.current) {
@@ -33,12 +51,18 @@ function QuickActions() {
         if (file) {
           const fileName = file.name;
           const fileType = fileName.split('.').pop().toLowerCase();
+          const fileSize = file.size; // Get file size in bytes
+          
+          // Format file size
+          const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+          const i = Math.floor(Math.log(fileSize) / Math.log(1024));
+          const formattedSize = Math.round(fileSize / Math.pow(1024, i)) + ' ' + sizes[i];
           
           if (window.addRecentDocument) {
-            window.addRecentDocument(fileName, fileType);
+            window.addRecentDocument(fileName, fileType, formattedSize);
           }
           
-          console.log(`📄 Uploaded: ${fileName}`);
+          console.log(`📄 Uploaded: ${fileName} (${formattedSize})`);
         }
         input.remove();
       };
@@ -48,6 +72,13 @@ function QuickActions() {
     
     fileInputRef.current.click();
   }, []);
+
+  const handleTryNow = useCallback(() => {
+    console.log('🎯 Try now clicked');
+    if (onNavigate) {
+      onNavigate('summary');
+    }
+  }, [onNavigate]);
 
   const quickActions = [
     { 
@@ -80,7 +111,6 @@ function QuickActions() {
     <div className="quick-actions-wrapper">
       <section className="quick-actions">
         <div className="qa-container">
-          {/* NEW: Side by side wrapper */}
           <div className="qa-sections-wrapper">
             {/* Quick Actions Section */}
             <div className="qa-section">
@@ -145,26 +175,12 @@ function QuickActions() {
                   </p>
                   <button 
                     className="try-now-btn"
-                    onClick={() => console.log('🎯 Try now clicked')}
+                    onClick={handleTryNow}
                   >
                     Try
                   </button>
                 </div>
               </div>
-
-              {/* Optional stats */}
-              {/* <div className="stats-mini">
-                <div className="stat-item">
-                  <span className="stat-dot"></span>
-                  <span className="stat-label">Docs</span>
-                  <span className="stat-value">1.2k</span>
-                </div>
-                <div className="stat-item">
-                  <span className="stat-dot"></span>
-                  <span className="stat-label">Quiz</span>
-                  <span className="stat-value">856</span>
-                </div>
-              </div> */}
             </div>
           </div>
         </div>
