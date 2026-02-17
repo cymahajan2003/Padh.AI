@@ -4,22 +4,21 @@ import QuickActions from '../QuickActions/QuickActions';
 import RecentDocuments from '../RecentDocuments/RecentDocuments';
 import ImageSection from "../ImageSection/ImageSection";
 
-function MainLayout() {
+function MainLayout({ onNavigate }) {
   return (
     <div className="main-layout-wrapper">
       <div className="main-layout-container">
 
         {/* Left Side - Quick Actions */}
         <div className="quick-actions-panel">
-          <QuickActions />
+          <QuickActions onNavigate={onNavigate} />
         </div>
 
         {/* Right Side - Image Section + Recent Documents */}
         <div className="recent-docs-panel">
-          <RecentDocuments />
-          <ImageSection />
+          <RecentDocuments />  
+          <ImageSection />     
         </div>
-
       </div>
     </div>
   );

@@ -9,6 +9,10 @@ const RecentDocuments = () => {
 
   // Load all documents from localStorage on component mount
   useEffect(() => {
+    loadDocumentsFromStorage();
+  }, []);
+
+  const loadDocumentsFromStorage = () => {
     const savedDocs = localStorage.getItem('recentDocuments');
     if (savedDocs) {
       const parsedDocs = JSON.parse(savedDocs);
@@ -16,14 +20,16 @@ const RecentDocuments = () => {
       // Show only first 3 by default
       setDocuments(parsedDocs.slice(0, 3));
     }
-  }, []);
+  };
 
   // Function to add a new document
-  const addDocument = (fileName) => {
+  const addDocument = (fileName, fileType, fileSize = '0 KB') => {
     const newDoc = {
       id: Date.now(),
       name: fileName,
-      date: new Date().toISOString().split('T')[0]
+      type: fileType,
+      date: new Date().toISOString().split('T')[0],
+      size: fileSize,
     };
     
     // Add new document at the beginning
@@ -37,6 +43,9 @@ const RecentDocuments = () => {
     } else {
       setDocuments(updatedDocs.slice(0, 3)); // Show only first 3
     }
+
+    // Dispatch storage event for other components to listen
+    window.dispatchEvent(new CustomEvent('documentsUpdated', { detail: updatedDocs }));
   };
 
   // Function to format date
@@ -55,7 +64,7 @@ const RecentDocuments = () => {
   // Function to handle document click
   const handleDocumentClick = (doc) => {
     console.log('Opening document:', doc.name);
-    alert(`Opening: ${doc.name}\n\nThis would open/download the document in a real implementation.`);
+    // You can implement document opening logic here
   };
 
   // Toggle between showing 3 documents and all documents
@@ -71,10 +80,37 @@ const RecentDocuments = () => {
     }
   };
 
-  // Export the addDocument function so QuickActions can use it
+  // Export functions for other components
   useEffect(() => {
     window.addRecentDocument = addDocument;
+    window.getRecentDocuments = () => allDocuments; // Add getter for documents
   }, [allDocuments, showAll]);
+
+  // Listen for storage changes from other tabs/windows
+  useEffect(() => {
+    const handleStorageChange = (e) => {
+      if (e.key === 'recentDocuments') {
+        loadDocumentsFromStorage();
+      }
+    };
+
+    const handleCustomUpdate = (e) => {
+      setAllDocuments(e.detail);
+      if (showAll) {
+        setDocuments(e.detail);
+      } else {
+        setDocuments(e.detail.slice(0, 3));
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('documentsUpdated', handleCustomUpdate);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('documentsUpdated', handleCustomUpdate);
+    };
+  }, [showAll]);
 
   // Get documents to display
   const displayDocs = showAll ? documents : [...documents];
@@ -97,7 +133,7 @@ const RecentDocuments = () => {
         <div className="recent-card">
           {/* Document List */}
           <div className="recent-list">
-            {displayDocs.length > 0 ? (
+            {allDocuments.length > 0 ? (
               displayDocs.map((doc, index) => (
                 <div 
                   key={doc.id || index}
@@ -118,7 +154,7 @@ const RecentDocuments = () => {
                         ) : (
                           <>
                             <span className="doc-name">{doc.name}</span>
-                            <span className="doc-date">{formatDate(doc.date)}</span>
+                            <span className="doc-date">{formatDate(doc.date)} • {doc.size}</span>
                           </>
                         )}
                       </div>
@@ -133,17 +169,17 @@ const RecentDocuments = () => {
                 <div className="doc-icon-wrapper empty-icon">
                   <FiFile className="doc-icon" />
                 </div>
-                <span>No documents uploaded yet</span>
-                <p className="no-docs-hint">Upload your first document using the "Upload Document" button</p>
+                <span className="no-docs-title">No documents uploaded yet</span>
+                <p className="no-docs-hint">Upload your first document using the Upload button in Quick Actions</p>
               </div>
             )}
           </div>
 
           {/* Footer with View All button - Inside the card like Recommended section */}
-          {allDocuments.length > 0 && (
+          {allDocuments.length > 3 && (
             <div className="recent-footer">
               <p className="recent-desc">
-                {showAll ? 'Showing all documents' : 'View all your uploaded documents'}
+                {showAll ? 'Showing all documents' : `${allDocuments.length} documents total`}
               </p>
               <button 
                 className="view-all-btn"
