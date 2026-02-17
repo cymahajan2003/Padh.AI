@@ -15,15 +15,21 @@ const RecentDocuments = () => {
       setAllDocuments(parsedDocs);
       // Show only first 3 by default
       setDocuments(parsedDocs.slice(0, 3));
+    } else {
+      // Initialize with empty arrays if no documents
+      setAllDocuments([]);
+      setDocuments([]);
     }
   }, []);
 
   // Function to add a new document
-  const addDocument = (fileName) => {
+  const addDocument = (fileName, fileType, fileSize = '0 KB') => {
     const newDoc = {
       id: Date.now(),
       name: fileName,
-      date: new Date().toISOString().split('T')[0]
+      type: fileType,
+      date: new Date().toISOString().split('T')[0],
+      size: fileSize
     };
     
     // Add new document at the beginning
@@ -37,6 +43,9 @@ const RecentDocuments = () => {
     } else {
       setDocuments(updatedDocs.slice(0, 3)); // Show only first 3
     }
+
+    // Dispatch event for other components
+    window.dispatchEvent(new CustomEvent('documentsUpdated', { detail: updatedDocs }));
   };
 
   // Function to format date
@@ -74,7 +83,43 @@ const RecentDocuments = () => {
   // Export the addDocument function so QuickActions can use it
   useEffect(() => {
     window.addRecentDocument = addDocument;
+    window.getRecentDocuments = () => allDocuments;
   }, [allDocuments, showAll]);
+
+  // Listen for storage changes
+  useEffect(() => {
+    const handleStorageChange = (e) => {
+      if (e.key === 'recentDocuments') {
+        const savedDocs = localStorage.getItem('recentDocuments');
+        if (savedDocs) {
+          const parsedDocs = JSON.parse(savedDocs);
+          setAllDocuments(parsedDocs);
+          if (showAll) {
+            setDocuments(parsedDocs);
+          } else {
+            setDocuments(parsedDocs.slice(0, 3));
+          }
+        }
+      }
+    };
+
+    const handleCustomUpdate = (e) => {
+      setAllDocuments(e.detail);
+      if (showAll) {
+        setDocuments(e.detail);
+      } else {
+        setDocuments(e.detail.slice(0, 3));
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('documentsUpdated', handleCustomUpdate);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('documentsUpdated', handleCustomUpdate);
+    };
+  }, [showAll]);
 
   // Get documents to display
   const displayDocs = showAll ? documents : [...documents];
@@ -97,7 +142,7 @@ const RecentDocuments = () => {
         <div className="recent-card">
           {/* Document List */}
           <div className="recent-list">
-            {displayDocs.length > 0 ? (
+            {allDocuments.length > 0 ? (
               displayDocs.map((doc, index) => (
                 <div 
                   key={doc.id || index}
@@ -118,7 +163,7 @@ const RecentDocuments = () => {
                         ) : (
                           <>
                             <span className="doc-name">{doc.name}</span>
-                            <span className="doc-date">{formatDate(doc.date)}</span>
+                            <span className="doc-date">{formatDate(doc.date)} • {doc.size}</span>
                           </>
                         )}
                       </div>
@@ -128,31 +173,39 @@ const RecentDocuments = () => {
                 </div>
               ))
             ) : (
-              // Only show empty state when there are truly no documents
-              <div className="no-documents">
-                <div className="doc-icon-wrapper empty-icon">
-                  <FiFile className="doc-icon" />
-                </div>
-                <span>No documents uploaded yet</span>
-                <p className="no-docs-hint">Upload your first document using the "Upload Document" button</p>
-              </div>
+              // Show empty rows when no documents
+              <>
+                {[1, 2, 3].map((_, index) => (
+                  <div key={`empty-${index}`} className="recent-row empty-row">
+                    <div className="doc-content">
+                      <div className="doc-icon-text">
+                        <div className="doc-icon-wrapper">
+                          <FiFile className="doc-icon" />
+                        </div>
+                        <div className="doc-details">
+                          <span className="doc-name empty-name">No document uploaded</span>
+                          <span className="doc-date empty-date">Upload a document</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </>
             )}
           </div>
 
-          {/* Footer with View All button - Inside the card like Recommended section */}
-          {allDocuments.length > 0 && (
-            <div className="recent-footer">
-              <p className="recent-desc">
-                {showAll ? 'Showing all documents' : 'View all your uploaded documents'}
-              </p>
-              <button 
-                className="view-all-btn"
-                onClick={toggleViewAll}
-              >
-                {showAll ? 'Show Less' : 'View All'}
-              </button>
-            </div>
-          )}
+          {/* Footer with View All button - ALWAYS SHOWN */}
+          <div className="recent-footer">
+            <p className="recent-desc">
+              {showAll ? 'Showing all documents' : 'View all your uploaded documents'}
+            </p>
+            <button 
+              className="view-all-btn"
+              onClick={toggleViewAll}
+            >
+              {showAll ? 'Show Less' : 'View All'}
+            </button>
+          </div>
         </div>
       </section>
     </div>

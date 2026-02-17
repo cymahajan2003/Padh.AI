@@ -1,3 +1,4 @@
+/* RecentDocuments.css */
 .recent-docs-wrapper {
   width: 100%;
   height: 100%;
@@ -134,7 +135,7 @@
 }
 
 .doc-icon {
-  color: #B087FF; /* Changed to purple to match theme */
+  color: #B087FF;
   font-size: 16px;
 }
 
@@ -191,7 +192,7 @@
 
 .recent-row:not(.empty-row):hover .doc-arrow {
   transform: translateX(3px);
-  color: #B087FF; /* Changed to purple on hover */
+  color: #B087FF;
 }
 
 /* No documents state */
@@ -237,6 +238,7 @@
   border-top: 1px solid #2a2a2a;
   padding-top: 16px;
   margin-top: 0;
+  min-height: 40px;
 }
 
 .recent-desc {
@@ -245,16 +247,19 @@
   margin: 0;
   line-height: 1.4;
   flex: 1;
-  max-width: 220px;
+}
+
+.footer-spacer {
+  width: 80px; /* Matches button width for alignment */
 }
 
 /* View All Button - Updated to match purple theme */
 .view-all-btn {
   background: transparent;
-  border: 1px solid #B087FF; /* Changed to purple */
+  border: 1px solid #B087FF;
   border-radius: 6px;
   padding: 8px 20px;
-  color: #B087FF; /* Changed to purple */
+  color: #B087FF;
   font-size: 12px;
   font-weight: 500;
   font-family: 'Anybody', sans-serif;
@@ -265,7 +270,7 @@
 }
 
 .view-all-btn:hover {
-  background: rgba(176, 135, 255, 0.1); /* Purple with opacity */
+  background: rgba(176, 135, 255, 0.1);
   transform: translateY(-1px);
 }
 
@@ -304,6 +309,10 @@
   .view-all-btn {
     padding: 8px 20px;
     font-size: 12px;
+  }
+  
+  .footer-spacer {
+    width: 90px;
   }
 }
 
@@ -352,19 +361,16 @@
   
   .recent-desc {
     font-size: 11px;
-    max-width: 200px;
   }
   
   .view-all-btn {
     padding: 7px 18px;
     font-size: 11px;
     min-width: 85px;
-    border-color: #B087FF; /* Purple */
-    color: #B087FF; /* Purple */
   }
   
-  .view-all-btn:hover {
-    background: rgba(176, 135, 255, 0.1);
+  .footer-spacer {
+    width: 85px;
   }
   
   .no-documents {
@@ -380,7 +386,7 @@
   }
 }
 
-/* Mobile - MATCHING RECOMMENDED SECTION LAYOUT */
+/* Mobile */
 @media (max-width: 767px) {
   .qa-header {
     margin-bottom: 16px;
@@ -419,7 +425,6 @@
     font-size: 14px;
   }
   
-  /* MOBILE FOOTER - EXACTLY LIKE RECOMMENDED SECTION */
   .recent-footer {
     flex-direction: row;
     align-items: center;
@@ -429,7 +434,6 @@
   
   .recent-desc {
     font-size: 11px;
-    max-width: 180px;
   }
   
   .view-all-btn {
@@ -437,12 +441,10 @@
     font-size: 11px;
     min-width: 80px;
     margin-left: auto;
-    border-color: #B087FF; /* Purple */
-    color: #B087FF; /* Purple */
   }
   
-  .view-all-btn:hover {
-    background: rgba(176, 135, 255, 0.1);
+  .footer-spacer {
+    width: 80px;
   }
   
   .no-documents {
@@ -459,7 +461,7 @@
   }
 }
 
-/* Small Mobile - MATCHING RECOMMENDED SECTION */
+/* Small Mobile */
 @media (max-width: 480px) {
   .qa-header {
     margin-bottom: 10px;
@@ -491,7 +493,6 @@
   
   .doc-icon {
     font-size: 13px;
-    color: #B087FF; /* Purple */
   }
   
   .doc-date {
@@ -502,11 +503,6 @@
     font-size: 13px;
   }
   
-  .recent-row:not(.empty-row):hover .doc-arrow {
-    color: #B087FF; /* Purple */
-  }
-  
-  /* SMALL MOBILE FOOTER - EXACTLY LIKE RECOMMENDED */
   .recent-footer {
     padding-top: 16px;
     gap: 10px;
@@ -514,20 +510,16 @@
   
   .recent-desc {
     font-size: 10px;
-    max-width: 150px;
   }
   
   .view-all-btn {
     padding: 6px 14px;
     font-size: 10px;
     min-width: 70px;
-    margin-left: auto;
-    border-color: #B087FF; /* Purple */
-    color: #B087FF; /* Purple */
   }
   
-  .view-all-btn:hover {
-    background: rgba(176, 135, 255, 0.1);
+  .footer-spacer {
+    width: 70px;
   }
   
   .no-documents {
