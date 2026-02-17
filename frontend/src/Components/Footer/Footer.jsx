@@ -63,9 +63,14 @@ function Footer() {
             <a href="#" className="social-icon"><FaLinkedinIn /></a>
           </div>
           
-          {/* Simplified Feedback Section */}
+          {/* Simplified Feedback Section - Always in a row */}
           <div className="feedback-section">
-            <h5>Your Feedback Matters</h5>
+            <div className="feedback-header">
+              <h5>Your Feedback Matters</h5>
+              <button className="feedback-submit">
+                <IoMdSend className="send-icon" /> Send Feedback
+              </button>
+            </div>
             <div className="feedback-input-group">
               <textarea 
                 placeholder="Share your feedback, suggestions, or report an issue..." 
@@ -73,9 +78,6 @@ function Footer() {
                 rows="3"
               ></textarea>
             </div>
-            <button className="feedback-submit">
-              <IoMdSend className="send-icon" /> Send Feedback
-            </button>
           </div>
         </div>
       </div>
