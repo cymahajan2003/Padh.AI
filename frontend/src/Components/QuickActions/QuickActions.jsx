@@ -75,7 +75,7 @@ function QuickActions({ onNavigate }) {
   const handleTryNow = useCallback(() => {
     console.log('🎯 Try now clicked');
     if (onNavigate) {
-      onNavigate('recommended'); // Navigate to recommended page
+      onNavigate('recommended');
     }
   }, [onNavigate]);
 
@@ -147,7 +147,7 @@ function QuickActions({ onNavigate }) {
               </div>
             </div>
 
-            {/* Recommended Section - Dashboard version (unchanged) */}
+            {/* Recommended Section */}
             <div className="recommended-section">
               <div className="qa-header">
                 <div className="header-left">
