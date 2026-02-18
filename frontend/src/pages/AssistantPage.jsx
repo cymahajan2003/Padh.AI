@@ -20,6 +20,29 @@ function AssistantPage({ onBack }) {
   const fileInputRef = useRef(null);
   const sidebarRef = useRef(null);
 
+  // FORCE SCROLL TO TOP IMMEDIATELY WHEN COMPONENT MOUNTS
+  useEffect(() => {
+    // Method 1: Scroll window to top
+    window.scrollTo(0, 0);
+    
+    // Method 2: Also try scrolling the document element
+    document.documentElement.scrollTop = 0;
+    
+    // Method 3: Scroll the body element
+    document.body.scrollTop = 0;
+    
+    // Method 4: Use a small delay to ensure it runs after render
+    setTimeout(() => {
+      window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: 'instant'
+      });
+    }, 10);
+    
+    console.log('AssistantPage mounted - scrolled to top');
+  }, []);
+
   // Mock conversation history
   const [conversations, setConversations] = useState([
     { id: 1, title: 'Study Tips for Exams', preview: 'How can I improve my memory...', date: 'Today', messages: 12 },
@@ -139,7 +162,6 @@ function AssistantPage({ onBack }) {
 
   const handleCopyMessage = (text) => {
     navigator.clipboard.writeText(text);
-    // Show temporary feedback
     alert('Message copied to clipboard!');
   };
 

@@ -1000,3 +1000,71 @@
     height: 28px;
   }
 }
+
+/* Add this to your AssistantPage.css - fixes top spacing */
+.assistant-page {
+  padding-top: 80px; /* Increased from 70px to 80px */
+}
+
+.assistant-container {
+  padding-top: 0; /* Remove any top padding from container */
+  margin-top: 0;
+}
+
+/* Ensure the navigation bar has proper margin from top */
+.assistant-nav-bar {
+  margin-top: 0;
+  margin-bottom: 20px;
+}
+
+/* Fix for mobile */
+@media (max-width: 768px) {
+  .assistant-page {
+    padding-top: 75px; /* Slightly reduced for mobile but still enough */
+  }
+}
+
+@media (max-width: 480px) {
+  .assistant-page {
+    padding-top: 70px;
+  }
+}
+
+
+/* Add this to your AssistantPage.css - fixes top spacing */
+.assistant-page {
+  padding-top: 80px; /* Increased from 70px to 80px */
+}
+
+.assistant-container {
+  padding-top: 0; /* Remove any top padding from container */
+  margin-top: 0;
+}
+
+/* Ensure the navigation bar has proper margin from top */
+.assistant-nav-bar {
+  margin-top: 0;
+  margin-bottom: 20px;
+}
+
+/* Fix for mobile */
+@media (max-width: 768px) {
+  .assistant-page {
+    padding-top: 75px;
+  }
+}
+
+@media (max-width: 480px) {
+  .assistant-page {
+    padding-top: 70px;
+  }
+}
+
+/* Add to your global CSS or AssistantPage.css */
+html, body {
+  scroll-behavior: auto !important;
+}
+
+.assistant-page {
+  scroll-margin-top: 0;
+}
