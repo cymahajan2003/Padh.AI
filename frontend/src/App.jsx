@@ -5,6 +5,7 @@ import MainLayout from './Components/MainLayout/MainLayout';
 import Footer from './Components/Footer/Footer';
 import SummaryPage from './pages/SummaryPage';
 import RecommendedPage from './pages/RecommendedPage';
+import QuizPage from './pages/QuizPage';
 
 function App() {
   const [currentView, setCurrentView] = useState('home');
@@ -32,6 +33,8 @@ function App() {
         return <SummaryPage onBack={handleBack} />;
       case 'recommended':
         return <RecommendedPage onBack={handleBack} />;
+      case 'quiz':
+        return <QuizPage onBack={handleBack} />;
       default:
         return null;
     }
@@ -41,4 +44,3 @@ function App() {
 }
 
 export default App;
-
