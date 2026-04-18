@@ -38,27 +38,6 @@ Padh.AI solves this by using a **RAG-based document understanding pipeline** tha
 - Make the solution practical for college-level deployment and future productization
 
 ---
-
-## 🧠 Why RAG Instead of Training a Custom LLM?
-
-Instead of training or fine-tuning a full large language model, Padh.AI uses **Retrieval-Augmented Generation (RAG)**.
-
-### Why this approach?
-
-- Faster to build
-- Lower computational cost
-- Easier to deploy
-- No need to retrain models on every dataset
-- Better grounding in user-uploaded academic content
-- More practical for student projects and real-world MVPs
-
-### Key Benefit
-
-The LLM does not answer purely from its pre-trained knowledge.  
-Instead, it first receives **retrieved relevant chunks from the uploaded academic documents**, making the output more relevant, accurate, and document-aware.
-
----
-
 ## 🏗️ High-Level System Architecture
 
 Padh.AI follows a modular pipeline:
@@ -145,20 +124,6 @@ This makes the system more relevant, context-aware, and useful for students.
 
 ---
 
-## 📌 Why This Pipeline Matters
-
-Instead of asking the LLM to answer from general knowledge alone, the system first retrieves relevant information from the uploaded academic documents.
-
-This ensures:
-
-- **Higher relevance**
-- **Better grounding in study material**
-- **Reduced hallucination risk**
-- **More personalized academic assistance**
-- **Better quality summaries, PYQs, and quizzes**
-
----
-
 ## 🧠 Simple Flow Representation
 
 ```text
@@ -214,7 +179,7 @@ This project can be implemented using the following technologies:
 - **FAISS / ChromaDB** – for storing and retrieving document embeddings
 - **Gemini / OpenAI / Groq** – for generating summaries, PYQs, quizzes, and explanations
 
-### Storage (Optional / Future)
+### Storage
 
 - **Supabase** – for user authentication, storing progress, and dashboard data
 - **PostgreSQL** – for storing metadata and analytics
@@ -257,35 +222,6 @@ Padh.AI/
 │
 └── README.md
 ```
-
----
-
-## 📌 Example Use Cases
-
-### 1. Summary Generation
-
-- User uploads academic notes or a PDF
-- The system extracts the important content
-- A short and useful summary is generated for quick revision
-
-### 2. PYQ Generation
-
-- User uploads subject material
-- The system identifies important concepts
-- It generates PYQ-style questions for exam practice
-
-### 3. Quiz Generation
-
-- User enters a topic or selects an uploaded document
-- The system creates multiple-choice questions (MCQs)
-- The user can attempt the quiz for self-assessment
-
-### 4. Concept Explanation
-
-- User asks a question related to the uploaded material
-- The system retrieves relevant content from the document
-- A simple explanation is generated based on that context
-
 ---
 
 ## ▶️ How to Run the Project
@@ -317,21 +253,6 @@ Frontend will run on:
 ```bash
 http://localhost:5173
 ```
-
----
-
-## 🔐 Environment Variables (Optional)
-
-If you are using an LLM API such as Gemini, OpenAI, or Groq, add the API key in an environment file.
-
-Example:
-
-```env
-GEMINI_API_KEY=your_api_key_here
-```
-
-You only need the API key for the provider you are actually using.
-
 ---
 
 ## 📊 Future Enhancements
