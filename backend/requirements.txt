@@ -5,3 +5,9 @@ python-dotenv
 PyPDF2
 
 
+google-genai
+pypdf
+faiss-cpu
+sentence-transformers
+torch
+numpy

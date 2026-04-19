@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routes import conceptualQuestions
+from routes.conceptualRoutes import router
 from routes import quiz
 import uvicorn
 
@@ -15,8 +15,8 @@ app.add_middleware(
 )
 
 # Include routes
-app.include_router(conceptualQuestions.router, prefix="/api")
 app.include_router(quiz.router, prefix="/api/quiz")
+app.include_router(router, prefix="/api")
 
 @app.get("/health")
 def health():
