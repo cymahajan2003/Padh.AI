@@ -44,7 +44,6 @@ Generate conceptual questions on topic: {topic}
 """
     res = ask(prompt)
     res = clean_json(res)
-
     try:
         return json.loads(res)
     except:
@@ -54,7 +53,6 @@ Generate conceptual questions on topic: {topic}
 def evaluate_answer(question, answer):
     prompt = f"""
 Return ONLY JSON:
-
 {{
   "correctness": "Correct | Partially Correct | Incorrect",
   "percentage": number,
@@ -62,13 +60,11 @@ Return ONLY JSON:
   "correct_answer": "best answer",
   "feedback": "short feedback"
 }}
-
 Question: {question}
 Answer: {answer}
 """
     res = ask(prompt)
     res = clean_json(res)
-
     try:
         return json.loads(res)
     except:
@@ -85,7 +81,6 @@ def rewrite_answer(answer):
     prompt = f"Improve this answer:\n{answer}"
     res = ask(prompt)
     return {"rewritten": res}
-
 
 # ==============================
 # 🔹 RAG LOGIC (PDF BASED)

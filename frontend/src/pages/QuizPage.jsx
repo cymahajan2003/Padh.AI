@@ -8,7 +8,7 @@ import {
   FiCpu, FiUsers
 } from 'react-icons/fi';
 
-const BACKEND_URL = 'http://localhost:5000/api/quiz';
+const BACKEND_URL = 'http://localhost:8000/api/quiz';
 
 function QuizPage({ onBack }) {
   const [topic, setTopic] = useState('');
@@ -122,7 +122,7 @@ function QuizPage({ onBack }) {
       setShowResults(false);
       setScore(0);
     } catch (err) {
-      setQuizError('Failed to generate quiz. Make sure backend is running on port 5000.');
+      setQuizError('Failed to generate quiz. Make sure backend is running on port 8000.');
     } finally {
       setIsGenerating(false);
     }
@@ -162,7 +162,7 @@ function QuizPage({ onBack }) {
       setShowResults(false);
       setScore(0);
     } catch (err) {
-      setQuizError('Failed to generate quiz. Make sure backend is running on port 5000.');
+      setQuizError('Failed to generate quiz. Make sure backend is running on port 8000.');
     } finally {
       setIsGenerating(false);
     }
@@ -491,7 +491,7 @@ function QuizPage({ onBack }) {
           {/* Quiz Intro */}
           <div className="quiz-intro">
             <p className="quiz-intro-text">
-              Test your knowledge with interactive quizzes. Score 80% or higher to unlock Tic Tac Toe.
+              Test your knowledge with interactive quizzes. Enter a topic for conceptual questions, or pick an uploaded document — quiz from docs uses RAG so questions match your material. Score 80% or higher to unlock Tic Tac Toe.
             </p>
           </div>
 
