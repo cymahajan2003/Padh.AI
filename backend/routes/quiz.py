@@ -570,7 +570,6 @@ async def generate_quiz(req: QuizGenerateRequest):
     content = _normalize_text(req.content)
     if not topic and not content:
         raise HTTPException(status_code=400, detail="Either topic or content must be provided.")
-
     return await _generate_quiz(topic=topic, content=content, difficulty_level=req.difficulty_level)
 
 
@@ -594,5 +593,4 @@ async def generate_more_quiz(req: QuizGenerateMoreRequest):
     content = _normalize_text(req.content)
     if not topic and not content:
         raise HTTPException(status_code=400, detail="Either topic or content must be provided.")
-
     return await _generate_quiz(topic=topic, content=content, difficulty_level=req.difficulty_level)
