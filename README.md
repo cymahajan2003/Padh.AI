@@ -152,36 +152,6 @@ http://localhost:5173
 ```
 ---
 
-## 📊 Future Enhancements
-
-- User login and authentication
-- Personalized dashboard
-- Quiz history tracking
-- Weak-topic analysis
-- Adaptive quiz difficulty
-- Flashcard generation
-- Spaced repetition learning
-- Leaderboards and gamification
-- Supabase integration for real data storage
-- Multi-document support
-- Citation-based answers from uploaded documents
-
----
-
-## 🎓 Academic Importance
-
-Padh.AI is designed as an AI-assisted academic learning platform that combines:
-
-- Document understanding
-- Information retrieval
-- Large language models
-- Automated question generation
-- Personalized learning support
-
-This project shows how **RAG (Retrieval-Augmented Generation)** can be used in education to make AI outputs more relevant and more useful than general-purpose chatbot responses.
-
----
-
 ## 🏁 Conclusion
 
 Padh.AI is a practical RAG-based academic assistant that helps students turn static study material into interactive learning resources.
