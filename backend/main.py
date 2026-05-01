@@ -8,6 +8,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from routes import chat, ocr, plagiarism, summary
 from routes import quiz
 from routes.conceptualRoutes import router as conceptual_router
+from routes import auth
+from routes import upload
+from routes.documents import router as documents_router
 
 load_dotenv()
 
@@ -40,7 +43,9 @@ app.include_router(summary.router,     prefix="/api/summary")            # /api/
 app.include_router(plagiarism.router,  prefix="/api/plagiarism-check")   # /api/plagiarism-check
 app.include_router(ocr.router,         prefix="/api/ocr")                # /api/ocr
 app.include_router(chat.router,        prefix="/api/chat")               # /api/chat
-
+app.include_router(auth.router, prefix="/api/auth")
+app.include_router(upload.router, prefix="/api/upload")
+app.include_router(documents_router, prefix="/api/documents")
 # ---------------------------------------------------------------------------
 # Health
 # ---------------------------------------------------------------------------

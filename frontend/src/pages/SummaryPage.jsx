@@ -3,7 +3,7 @@ import './SummaryPage.css';
 import Header from '../Components/Header/Header';
 import Footer from '../Components/Footer/Footer';
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8000';
 
 function SummaryPage({ onBack }) {
   const [selectedDoc, setSelectedDoc] = useState(null);
@@ -12,11 +12,43 @@ function SummaryPage({ onBack }) {
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState('');
 
+  // -------------------------------
+  // LOAD DOCUMENTS FROM BACKEND
+  // -------------------------------
+  const loadDocuments = async () => {
+    try {
+      const token = localStorage.getItem('token');
+
+      const res = await fetch(`${API_BASE}/api/documents/`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) throw new Error("Failed to load documents");
+
+      const data = await res.json();
+
+      const parsedDocs = data.map(doc => ({
+        id: doc.id,
+        name: doc.file_name,
+        date: new Date(doc.created_at).toLocaleDateString(), // Better date formatting
+        size: '—', 
+      }));
+
+      setUploadedDocuments(parsedDocs);
+    } catch (err) {
+      console.error("Failed to load documents", err);
+      setError("Failed to load your documents.");
+    }
+  };
+
   useEffect(() => {
     loadDocuments();
     
-    const handleDocumentsUpdated = (e) => {
-      setUploadedDocuments(e.detail);
+    // Reload from backend when documents are updated elsewhere
+    const handleDocumentsUpdated = () => {
+      loadDocuments();
     };
 
     window.addEventListener('documentsUpdated', handleDocumentsUpdated);
@@ -26,14 +58,6 @@ function SummaryPage({ onBack }) {
     };
   }, []);
 
-  const loadDocuments = () => {
-    const savedDocs = localStorage.getItem('recentDocuments');
-    if (savedDocs) {
-      const parsedDocs = JSON.parse(savedDocs);
-      setUploadedDocuments(parsedDocs);
-    }
-  };
-
   const handleDocumentSelect = (doc) => {
     setSelectedDoc(doc);
     setSummaryText('');
@@ -42,10 +66,13 @@ function SummaryPage({ onBack }) {
 
   const handleDeleteDocument = (e, docId) => {
     e.stopPropagation();
+    
+    // Update local state to remove the document visually
     const updatedDocs = uploadedDocuments.filter(doc => doc.id !== docId);
     setUploadedDocuments(updatedDocs);
-    localStorage.setItem('recentDocuments', JSON.stringify(updatedDocs));
-    window.dispatchEvent(new CustomEvent('documentsUpdated', { detail: updatedDocs }));
+    
+    // Note: You may want to add a backend DELETE request here in the future
+    // fetch(`${API_BASE}/api/documents/${docId}`, { method: 'DELETE', ... })
 
     if (selectedDoc?.id === docId) {
       setSelectedDoc(null);
@@ -54,41 +81,48 @@ function SummaryPage({ onBack }) {
     }
   };
 
+  // -------------------------------
+  // GENERATE SUMMARY (NEW FLOW)
+  // -------------------------------
   const handleGenerateSummary = async () => {
     if (!selectedDoc) return;
-
-    if (!selectedDoc.content || selectedDoc.content.trim().length === 0) {
-      setError('No readable content found in this document. Please re-upload the file.');
-      return;
-    }
 
     setIsGenerating(true);
     setError('');
     setSummaryText('');
 
     try {
-      const response = await fetch(`${API_BASE}/api/summary`, {
+      const token = localStorage.getItem('token');
+      
+      const res = await fetch(`${API_BASE}/api/summary/`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`, // Added token authorization for safety
+        },
         body: JSON.stringify({
-          document_name: selectedDoc.name,
-          content: selectedDoc.content,
+          document_id: selectedDoc.id 
         }),
       });
 
-      const data = await response.json().catch(() => ({}));
-      if (!response.ok) {
-        throw new Error(data.detail || `Request failed (${response.status})`);
+      const data = await res.json().catch(() => ({}));
+      
+      if (!res.ok) {
+        throw new Error(data.detail || `Request failed (${res.status})`);
       }
 
-      setSummaryText(data.summary || '');
+      setSummaryText(data.summary || 'No summary generated.');
     } catch (err) {
+      console.error("Summary error:", err);
       setError(err.message || 'Failed to generate summary. Please try again.');
     } finally {
       setIsGenerating(false);
     }
   };
 
+  // -------------------------------
+  // UI FORMATTING & EXPORT FUNCTIONS
+  // -------------------------------
   const renderFormattedSummary = (text) => {
     const lines = text.split('\n');
     const elements = [];

@@ -7,160 +7,122 @@ import {
   FiChevronRight,
   FiZap
 } from 'react-icons/fi';
-import { useCallback, useRef } from 'react';
+import { useCallback } from 'react';
 
 function QuickActions({ onNavigate }) {
-  const fileInputRef = useRef(null);
+  const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
 
+  const buildApiUrl = useCallback((path) => {
+    const base = API_BASE.replace(/\/+$/, '');
+    const cleanPath = path.startsWith('/') ? path : `/${path}`;
+    if (base.endsWith('/api')) {
+      return `${base}${cleanPath}`;
+    }
+    return `${base}/api${cleanPath}`;
+  }, [API_BASE]);
+
+  // -------------------------------
+  // NAVIGATION HANDLER
+  // -------------------------------
   const handleCardClick = useCallback((action) => {
-    console.log(`✨ ${action} clicked`);
-    
     switch(action) {
       case 'upload':
         handleUpload();
         break;
       case 'summary':
-        if (onNavigate) {
-          onNavigate('summary');
-        }
+        onNavigate && onNavigate('summary');
         break;
       case 'quiz':
-        if (onNavigate) {
-          onNavigate('quiz');
-        }
+        onNavigate && onNavigate('quiz');
         break;
       case 'assistant':
-        if (onNavigate) {
-          onNavigate('assistant');
-        }
+        onNavigate && onNavigate('assistant');
         break;
       default:
         console.log('Unknown action:', action);
     }
   }, [onNavigate]);
 
-  const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
-  const IMAGE_EXTENSIONS = new Set(['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'tiff']);
-
+  // -------------------------------
+  // UPLOAD HANDLER (RESOLVED)
+  // -------------------------------
   const handleUpload = useCallback(() => {
-    if (!fileInputRef.current) {
-      const input = document.createElement('input');
-      input.type = 'file';
-      input.accept = '.pdf,.doc,.docx,.txt,.jpg,.jpeg,.png';
-      input.multiple = false;
-      input.onchange = async (event) => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.pdf,.doc,.docx,.txt,.jpg,.jpeg,.png,.gif,.webp,.bmp,.tiff';
+    input.multiple = false;
 
+    input.onchange = async (event) => {
+      try {
         const file = event.target.files?.[0];
-        if (file) {
-          const fileType = fileName.split('.').pop().toLowerCase();
-          const fileSize = file.size;
+        if (!file) return;
 
-          const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-          const i = Math.floor(Math.log(fileSize) / Math.log(1024));
-          const formattedSize = Math.round(fileSize / Math.pow(1024, i)) + ' ' + sizes[i];
-
-          let content = '';
-          if (IMAGE_EXTENSIONS.has(fileType)) {
-            try {
-              const formData = new FormData();
-              formData.append('file', file);
-              const res = await fetch(`${API_BASE}/api/ocr`, {
-                method: 'POST',
-                body: formData,
-              });
-              const data = await res.json().catch(() => ({}));
-              if (!res.ok) throw new Error(data.detail || 'OCR failed');
-              content = data.text || '';
-            } catch (err) {
-              console.error('OCR error:', err);
-              alert(`Image OCR failed: ${err.message}\n\nIf the error mentions Tesseract, install it from https://github.com/UB-Mannheim/tesseract/wiki and add it to your system PATH (or set TESSERACT_CMD in backend .env).`);
-              input.remove();
-              return;
-            }
-          } else {
-            content = await new Promise((resolve, reject) => {
-              const reader = new FileReader();
-              reader.onload = (e) => resolve(e.target?.result ?? '');
-              reader.onerror = () => reject(new Error('Failed to read file'));
-              reader.readAsText(file);
-            });
-          }
-
-          // Plagiarism check before adding document (threshold 50% via plagiarismcheck.org)
-          let plagiarismMessage = '';
-          try {
-            const checkRes = await fetch(`${API_BASE}/api/plagiarism-check`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ content: content || '' }),
-            });
-            const checkData = await checkRes.json().catch(() => ({}));
-            if (!checkRes.ok) {
-              alert(`Plagiarism check failed: ${checkData.detail || checkRes.status}. Please try again.`);
-              input.remove();
-              return;
-            }
-            if (!checkData.within_threshold) {
-              const pct = checkData.plagiarism_percentage ?? '?';
-              alert(`High plagiarism (${pct}%). Document not uploaded.`);
-              input.remove();
-              return;
-            }
-            plagiarismMessage = checkData?.message || '';
-          } catch (err) {
-            console.error('Plagiarism check error:', err);
-            alert('Plagiarism check failed. Please try again.');
-            input.remove();
-            return;
-          }
-
-          if (window.addRecentDocument) {
-            window.addRecentDocument(fileName, fileType, formattedSize, content);
-          }
-          alert(plagiarismMessage || 'Low plagiarism. Document successfully uploaded.');
-          console.log(`📄 Uploaded: ${fileName} (${formattedSize})${IMAGE_EXTENSIONS.has(fileType) ? ' [OCR]' : ''}`);
+        const token = localStorage.getItem('token');
+        if (!token) {
+          alert('Please login first.');
+          return;
         }
+
+        const fileName = file.name;
+        const fileSize = file.size || 0;
+
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = fileSize > 0 ? Math.floor(Math.log(fileSize) / Math.log(1024)) : 0;
+        const safeIndex = Math.min(i, sizes.length - 1);
+        const formattedSize = fileSize > 0
+          ? Math.round(fileSize / Math.pow(1024, safeIndex)) + ' ' + sizes[safeIndex]
+          : '0 Bytes';
+
+        // SEND TO BACKEND
+        const formData = new FormData();
+        formData.append('file', file);
+
+        const uploadRes = await fetch(buildApiUrl('/upload'), {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: formData,
+        });
+
+        const uploadData = await uploadRes.json().catch(() => ({}));
+
+        if (!uploadRes.ok) {
+          throw new Error(uploadData.detail || `Upload failed (${uploadRes.status})`);
+        }
+
+        // SUCCESS
+        alert(uploadData.message || 'Document uploaded successfully');
+        console.log(`📄 Uploaded: ${fileName} (${formattedSize})`);
+
+        // trigger refresh
+        window.dispatchEvent(new Event('documentsUpdated'));
+
+      } catch (err) {
+        console.error('Upload error:', err);
+        alert(err.message || 'Upload failed. Please try again.');
+      } finally {
         input.remove();
-      };
+      }
+    };
 
-      fileInputRef.current = input;
-    }
-
-    fileInputRef.current.click();
-  }, []);
+    input.click();
+  }, [buildApiUrl]);
 
   const handleTryNow = useCallback(() => {
-    console.log('🎯 Try now clicked');
     if (onNavigate) {
       onNavigate('recommended');
     }
   }, [onNavigate]);
 
+  // -------------------------------
+  // UI
+  // -------------------------------
   const quickActions = [
-    { 
-      id: 'upload', 
-      title: 'Upload', 
-      desc: 'Add documents', 
-      icon: FiUpload
-    },
-    { 
-      id: 'summary', 
-      title: 'Summary', 
-      desc: 'AI insights', 
-      icon: FiFileText
-    },
-    { 
-      id: 'quiz', 
-      title: 'Quiz', 
-      desc: 'Test yourself', 
-      icon: FiCheckSquare
-    },
-    { 
-      id: 'assistant', 
-      title: 'Assistant', 
-      desc: '24/7 help', 
-      icon: FiCpu
-    }
+    { id: 'upload', title: 'Upload', desc: 'Add documents', icon: FiUpload },
+    { id: 'summary', title: 'Summary', desc: 'AI insights', icon: FiFileText },
+    { id: 'quiz', title: 'Quiz', desc: 'Test yourself', icon: FiCheckSquare },
+    { id: 'assistant', title: 'Assistant', desc: '24/7 help', icon: FiCpu }
   ];
 
   return (
@@ -168,6 +130,7 @@ function QuickActions({ onNavigate }) {
       <section className="quick-actions">
         <div className="qa-container">
           <div className="qa-sections-wrapper">
+
             {/* Quick Actions Section */}
             <div className="qa-section">
               <div className="qa-header">
@@ -218,18 +181,18 @@ function QuickActions({ onNavigate }) {
                   <div className="recommended-icon">
                     <FiZap />
                   </div>
-                  
+
                   <div className="recommended-text">
                     <h3 className="recommended-title">Anti-Lazy AI</h3>
                     <p className="recommended-tagline">Learn actively</p>
                   </div>
                 </div>
-                
+
                 <div className="recommended-footer">
                   <p className="recommended-desc">
                     Smart questioning for better learning
                   </p>
-                  <button 
+                  <button
                     className="try-now-btn"
                     onClick={handleTryNow}
                   >
@@ -238,6 +201,7 @@ function QuickActions({ onNavigate }) {
                 </div>
               </div>
             </div>
+
           </div>
         </div>
       </section>

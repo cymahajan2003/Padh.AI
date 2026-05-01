@@ -13,3 +13,4 @@ google-genai
 pypdf
 torch
 numpy
+supabase
