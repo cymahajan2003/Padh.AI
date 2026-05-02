@@ -1,10 +1,10 @@
 import os
-
 import uvicorn
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+# Routers
 from routes import chat, ocr, plagiarism, summary
 from routes import quiz
 from routes.conceptualRoutes import router as conceptual_router
@@ -37,21 +37,29 @@ app.add_middleware(
 # ---------------------------------------------------------------------------
 # Routers
 # ---------------------------------------------------------------------------
-app.include_router(conceptual_router,  prefix="/api")                    # /api/generate, /api/evaluate …
-app.include_router(quiz.router,        prefix="/api/quiz")               # /api/quiz/generate, /submit, /generate-more
-app.include_router(summary.router,     prefix="/api/summary")            # /api/summary
-app.include_router(plagiarism.router,  prefix="/api/plagiarism-check")   # /api/plagiarism-check
-app.include_router(ocr.router,         prefix="/api/ocr")                # /api/ocr
-app.include_router(chat.router,        prefix="/api/chat")               # /api/chat
-app.include_router(auth.router, prefix="/api/auth")
-app.include_router(upload.router, prefix="/api/upload")
-app.include_router(documents_router, prefix="/api/documents")
+
+# 🔥 FIXED: conceptual routes properly namespaced
+app.include_router(conceptual_router, prefix="/api/conceptual")
+
+app.include_router(quiz.router,        prefix="/api/quiz")
+app.include_router(summary.router,     prefix="/api/summary")
+app.include_router(plagiarism.router,  prefix="/api/plagiarism-check")
+app.include_router(ocr.router,         prefix="/api/ocr")
+app.include_router(chat.router,        prefix="/api/chat")
+app.include_router(auth.router,        prefix="/api/auth")
+app.include_router(upload.router,      prefix="/api/upload")
+app.include_router(documents_router,   prefix="/api/documents")
+
 # ---------------------------------------------------------------------------
-# Health
+# Health Check
 # ---------------------------------------------------------------------------
 @app.get("/health")
 def health():
     return {"status": "ok"}
 
+
+# ---------------------------------------------------------------------------
+# Run Server
+# ---------------------------------------------------------------------------
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)

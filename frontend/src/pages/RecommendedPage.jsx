@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import "./RecommendedPage.css";
 
 const API = "http://localhost:8000/api";
 
 export default function App() {
+  // Logic State
   const [topic, setTopic] = useState("");
   const [newQuestions, setNewQuestions] = useState([]);
   const [index, setIndex] = useState(0);
@@ -11,38 +12,106 @@ export default function App() {
   const [evaluationResult, setEvaluationResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [evaluating, setEvaluating] = useState(false);
-  const [file, setFile] = useState(null);
   const [activeMode, setActiveMode] = useState("topic");
   const [answers, setAnswers] = useState([]);
   const [results, setResults] = useState([]);
   const [maxReached, setMaxReached] = useState(0);
   const [allQuestions, setAllQuestions] = useState([]);
   const [showQuiz, setShowQuiz] = useState(false);
+  
+  // New Document & Level Logic State
+  const [documents, setDocuments] = useState([]);
+  const [selectedDoc, setSelectedDoc] = useState(null);
+  const [difficultyLevel, setDifficultyLevel] = useState(1);
+  const [showUploadModal, setShowUploadModal] = useState(false);
+  const fileInputRef = useRef(null);
 
-  const makeQuestions = async () => {
-    if (activeMode === "topic" && !topic.trim()) return;
-    if (activeMode === "pdf" && !file) return;
-    
+  // -------------------------------
+  // FETCH DOCUMENTS
+  // -------------------------------
+  const fetchDocuments = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch(`${API}/documents/`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
+      setDocuments(data || []);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchDocuments();
+    window.addEventListener("documentsUpdated", fetchDocuments);
+    return () => window.removeEventListener("documentsUpdated", fetchDocuments);
+  }, []);
+
+  // -------------------------------
+  // FILE UPLOAD
+  // -------------------------------
+  const processFile = async (file) => {
     setLoading(true);
     try {
-      let res;
-      if (activeMode === "topic") {
-        res = await fetch(`${API}/generate`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ topic })
-        });
-      } else {
-        const formData = new FormData();
-        formData.append("file", file);
-        res = await fetch(`${API}/generate-pdf`, {
-          method: "POST",
-          body: formData
-        });
-      }
+      const token = localStorage.getItem("token");
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await fetch(`${API}/upload`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData
+      });
+
       const data = await res.json();
-      setAllQuestions(data.questions);
-      setNewQuestions(data.questions);
+      if (!res.ok) throw new Error(data.detail);
+
+      setSelectedDoc({ id: data.id, file_name: file.name });
+      window.dispatchEvent(new Event("documentsUpdated"));
+      setShowUploadModal(false);
+    } catch (err) {
+      alert("Upload failed: " + err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files?.[0];
+    if (file) processFile(file);
+  };
+
+  // -------------------------------
+  // GENERATE QUESTIONS
+  // -------------------------------
+  const makeQuestions = async () => {
+    if (activeMode === "topic" && !topic.trim()) return;
+    if (activeMode === "pdf" && !selectedDoc) return;
+
+    setLoading(true);
+    setDifficultyLevel(1);
+
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch(`${API}/conceptual/generate`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          topic: topic || "",
+          document_id: selectedDoc?.id || null,
+          difficulty_level: 1
+        })
+      });
+
+      const data = await res.json();
+      const questions = data?.questions || [];
+
+      setAllQuestions(questions);
+      setNewQuestions(questions);
       setIndex(0);
       setAnswer("");
       setEvaluationResult(null);
@@ -50,44 +119,64 @@ export default function App() {
       setResults([]);
       setMaxReached(0);
       setShowQuiz(true);
-    } catch (e) { 
-      console.error(e); 
+    } catch (e) {
+      console.error(e);
     }
     setLoading(false);
   };
 
   const generateMoreQuestions = async () => {
+    if (difficultyLevel >= 3) return;
+    const nextLevel = difficultyLevel + 1;
+    setDifficultyLevel(nextLevel);
     setLoading(true);
+
     try {
-      const res = await fetch(`${API}/generate-more`, {
+      const token = localStorage.getItem("token");
+      const res = await fetch(`${API}/conceptual/generate-more`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-          topic: topic,
-          current_questions: allQuestions
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          topic: topic || "",
+          document_id: selectedDoc?.id || null,
+          current_questions: allQuestions || [],
+          difficulty_level: nextLevel
         })
       });
+
       const data = await res.json();
-      const updatedQuestions = [...allQuestions, ...data.questions];
-      setAllQuestions(updatedQuestions);
-      setNewQuestions(updatedQuestions);
-    } catch (e) { 
-      console.error(e); 
+      const more = data?.questions || [];
+      const updated = [...allQuestions, ...more];
+      setAllQuestions(updated);
+      setNewQuestions(updated);
+    } catch (e) {
+      console.error(e);
     }
     setLoading(false);
   };
 
+  // -------------------------------
+  // EVALUATE & NAV
+  // -------------------------------
   const submit = async () => {
     setEvaluating(true);
     try {
-      const res = await fetch(`${API}/evaluate`, {
+      const token = localStorage.getItem("token");
+      const res = await fetch(`${API}/conceptual/evaluate`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
         body: JSON.stringify({
           question: newQuestions[index],
-          answer: answer
+          answer
         })
       });
+
       const data = await res.json();
       setEvaluationResult(data);
       const updatedAnswers = [...answers];
@@ -97,8 +186,8 @@ export default function App() {
       updatedResults[index] = data;
       setResults(updatedResults);
       if (index + 1 > maxReached) setMaxReached(index + 1);
-    } catch (e) { 
-      console.error(e); 
+    } catch (e) {
+      console.error(e);
     }
     setEvaluating(false);
   };
@@ -108,7 +197,6 @@ export default function App() {
     setIndex(nextIndex);
     setAnswer(answers[nextIndex] || "");
     setEvaluationResult(results[nextIndex] || null);
-    if (nextIndex + 1 > maxReached) setMaxReached(nextIndex + 1);
   };
 
   const retry = () => {
@@ -130,7 +218,8 @@ export default function App() {
     setResults([]);
     setMaxReached(0);
     setTopic("");
-    setFile(null);
+    setSelectedDoc(null);
+    setDifficultyLevel(1);
   };
 
   const goToQuestion = (i) => {
@@ -142,7 +231,10 @@ export default function App() {
   const completedCount = answers.filter(a => a && a.trim()).length;
   const progress = newQuestions.length ? (completedCount / newQuestions.length) * 100 : 0;
 
-  // Landing Page
+  // -------------------------------
+  // UI RENDERING
+  // -------------------------------
+
   if (!showQuiz) {
     return (
       <div className="rec-app">
@@ -154,7 +246,6 @@ export default function App() {
             </p>
           </div>
 
-          {/* Mode Toggle - Topic Search | Upload Document */}
           <div className="rec-mode-toggle">
             <button 
               className={`rec-mode-toggle-btn ${activeMode === 'topic' ? 'active' : ''}`}
@@ -170,14 +261,13 @@ export default function App() {
             </button>
           </div>
 
-          {/* Input Area - Bigger width */}
           <div className="rec-input-area">
             {activeMode === 'topic' ? (
               <div className="rec-search-box">
                 <i className="fa-solid fa-magnifying-glass"></i>
                 <input
                   type="text"
-                  placeholder="e.g., Artificial Intelligence, React.js, Climate Change..."
+                  placeholder="e.g., Artificial Intelligence, React.js..."
                   value={topic}
                   onChange={(e) => setTopic(e.target.value)}
                   onKeyPress={(e) => e.key === 'Enter' && makeQuestions()}
@@ -188,48 +278,62 @@ export default function App() {
               </div>
             ) : (
               <div className="rec-pdf-area">
-                <label className="rec-upload-area">
-                  <input
-                    type="file"
-                    accept=".pdf"
-                    onChange={(e) => setFile(e.target.files[0])}
-                    hidden
-                  />
+                <div className="rec-upload-area" onClick={() => setShowUploadModal(true)}>
                   <div className="rec-upload-content">
-                    <i className="fa-solid fa-cloud-arrow-up"></i>
-                    <span>{file ? file.name : 'Click or drag PDF here'}</span>
-                    {file && <span className="rec-file-size">{(file.size / 1024).toFixed(0)} KB</span>}
+                    <i className="fa-solid fa-file-pdf"></i>
+                    <span>{selectedDoc ? selectedDoc.file_name : 'Click to choose or upload document'}</span>
                   </div>
-                </label>
-                <button onClick={makeQuestions} disabled={loading || !file}>
+                </div>
+                <button onClick={makeQuestions} disabled={loading || !selectedDoc}>
                   {loading ? 'Processing...' : 'Generate →'}
                 </button>
               </div>
             )}
           </div>
 
-          {/* Promotional Cards - Small, full border radius */}
           <div className="rec-promo-grid">
             <div className="rec-promo-card">
               <span className="rec-promo-icon">🤖</span>
-              <div className="rec-promo-text">
-                <h4>AI-Powered</h4>
-              </div>
+              <div className="rec-promo-text"><h4>AI-Powered</h4></div>
             </div>
             <div className="rec-promo-card">
               <span className="rec-promo-icon">📊</span>
-              <div className="rec-promo-text">
-                <h4>Instant Feedback</h4>
-              </div>
+              <div className="rec-promo-text"><h4>Instant Feedback</h4></div>
             </div>
             <div className="rec-promo-card">
               <span className="rec-promo-icon">🎯</span>
-              <div className="rec-promo-text">
-                <h4>Adaptive Learning</h4>
-              </div>
+              <div className="rec-promo-text"><h4>Adaptive Learning</h4></div>
             </div>
           </div>
         </div>
+
+        {/* Upload/Selection Modal */}
+        {showUploadModal && (
+          <div className="rec-modal-overlay" onClick={() => setShowUploadModal(false)}>
+            <div className="rec-modal-content" onClick={e => e.stopPropagation()}>
+              <div className="rec-modal-header">
+                <h3>Select Document</h3>
+                <button className="rec-modal-close" onClick={() => setShowUploadModal(false)}>&times;</button>
+              </div>
+              <div className="rec-document-list">
+                <label className="rec-modal-upload-btn">
+                  <input type="file" accept=".pdf" onChange={handleFileChange} hidden />
+                  <i className="fa-solid fa-plus"></i> Upload New PDF
+                </label>
+                {documents.map(doc => (
+                  <div 
+                    key={doc.id} 
+                    className="rec-doc-item" 
+                    onClick={() => { setSelectedDoc(doc); setShowUploadModal(false); }}
+                  >
+                    <i className="fa-solid fa-file-lines"></i>
+                    <span>{doc.file_name}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     );
   }
@@ -267,7 +371,7 @@ export default function App() {
 
         <div className="rec-quiz-main">
           <div className="rec-question-card">
-            <div className="rec-question-badge">Question {index + 1}</div>
+            <div className="rec-question-badge">Question {index + 1} (Level {difficultyLevel})</div>
             <h2 className="rec-question-text">{newQuestions[index]}</h2>
             
             <textarea
@@ -294,19 +398,19 @@ export default function App() {
             ) : evaluationResult && (
               <div className="rec-evaluation">
                 <div className="rec-score-card">
-                  <div className="rec-score-circle">
+                   <div className="rec-score-circle">
                     <svg width="100" height="100" viewBox="0 0 100 100">
                       <circle cx="50" cy="50" r="45" fill="none" stroke="#2a2a2a" strokeWidth="4"/>
                       <circle 
                         cx="50" cy="50" r="45" fill="none" stroke="#10b981" strokeWidth="4"
                         strokeDasharray={`${2 * Math.PI * 45}`}
-                        strokeDashoffset={`${2 * Math.PI * 45 * (1 - evaluationResult.percentage / 100)}`}
+                        strokeDashoffset={`${2 * Math.PI * 45 * (1 - (evaluationResult.percentage || 0) / 100)}`}
                         transform="rotate(-90 50 50)"
                         strokeLinecap="round"
                       />
                     </svg>
                     <div className="rec-score-text">
-                      <span className="rec-score-value">{evaluationResult.percentage}</span>
+                      <span className="rec-score-value">{evaluationResult.percentage || 0}</span>
                       <span className="rec-score-unit">%</span>
                     </div>
                   </div>
@@ -314,24 +418,10 @@ export default function App() {
                 </div>
 
                 <div className="rec-feedback-list">
-                  <div className="rec-feedback-item missing">
-                    <i className="fa-solid fa-circle-exclamation"></i>
-                    <div>
-                      <strong>What's Missing</strong>
-                      <p>{evaluationResult.wrong}</p>
-                    </div>
-                  </div>
-                  <div className="rec-feedback-item correct">
-                    <i className="fa-solid fa-check-circle"></i>
-                    <div>
-                      <strong>Correct Answer</strong>
-                      <p>{evaluationResult.correct_answer}</p>
-                    </div>
-                  </div>
                   <div className="rec-feedback-item feedback">
                     <i className="fa-solid fa-lightbulb"></i>
                     <div>
-                      <strong>Feedback</strong>
+                      <strong>AI Feedback</strong>
                       <p>{evaluationResult.feedback}</p>
                     </div>
                   </div>
@@ -347,9 +437,10 @@ export default function App() {
                     </button>
                   ) : (
                     <div className="rec-finish-group">
-                      {newQuestions.length >= 5 && (
-                        <button className="rec-btn-more" onClick={generateMoreQuestions}>
-                          <i className="fa-solid fa-plus"></i> More Questions
+                      {difficultyLevel < 3 && (
+                        <button className="rec-btn-more" onClick={generateMoreQuestions} disabled={loading}>
+                          <i className="fa-solid fa-arrow-up-right-dots"></i> 
+                          {loading ? 'Leveling up...' : 'More (Next Level)'}
                         </button>
                       )}
                       <button className="rec-btn-finish" onClick={resetQuiz}>
